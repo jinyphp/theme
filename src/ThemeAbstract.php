@@ -5,10 +5,13 @@ abstract class ThemeAbstract
 {
     protected $conf;
     protected $_theme;
-    protected $_env=[];
+    public $_env=[];
 
-    protected $_header;
-    protected $_footer;
+    public $_header;
+    public $_footer;
+    public $_layout;
+
+    public $_name;
 
     /**
      * 동작 테마설정

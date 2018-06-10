@@ -24,9 +24,8 @@ trait Header
     }
 
     // 해더 내용을 랜더링 합니다.
-    public function headerRender($data=[])
+    public function headerRender($viewData=[])
     {
-
         $prefixdCode = $this->setPrefix(self::PREFIX_START, self::PREFIX_END)->preFixs($this->_header);
         foreach ($prefixdCode as $value) {
 
@@ -39,11 +38,30 @@ trait Header
                         $data, 
                         $this->_header);
                     break;
+                case '&':
+                    $cmd = explode("::",substr($value, 1));
+                    //echo "classname = ".$cmd[0]."<br>";
+                    // echo "method = ".$cmd[1]."<br>";
+                    
+                    $classname = $cmd[0];
+                    $method = $cmd[1]; 
+                    $this->_header = str_replace(
+                        self::PREFIX_START." ".$value." ".self::PREFIX_END, 
+                        $classname::$method(), 
+                        $this->_header);
+                    break;    
             }
 
         }
-    
 
+        return $this->_header;
+    }
+
+    /**
+     * 저장된 해더body를 읽어옵니다.
+     */
+    public function getHeader()
+    {
         return $this->_header;
     }
 }
