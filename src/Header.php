@@ -64,4 +64,6 @@ trait Header
     {
         return $this->_header;
     }
+
+    
 }
