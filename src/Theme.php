@@ -22,18 +22,21 @@ class Theme extends ThemeAbstract
 
         // 객체참조 개선을 위해서 임시저장합니다.
         $this->conf = $this->Application->Config;
+        /// echo "<pre>";
+        // print_r($this->conf);
+        // echo "</pre>";
 
         // 테마 환경 설정을 읽어 옵니다.
         $this->_theme = $this->Application->Config->data("site.theme");
-        //echo "테마 이름 = ".$this->_theme."<br>";
+        // echo "테마 이름 = ".$this->_theme."<br>";
         if ($this->_theme) {
             // 테마 환경설정파일의 경로
-            $this->_path = $this->Application->Config->data("ENV.theme");
+            $this->_path = $this->Application->Config->data("ENV.path.theme");
             //echo "테마 경로 = ".$this->_path."<br>";
 
             $this->loadENV();
         } else {
-            echo "사이트 테마가 설정되어 있지 않습니다.<br>";
+            // echo "사이트 테마가 설정되어 있지 않습니다.<br>";
         }
     }
 
@@ -42,8 +45,10 @@ class Theme extends ThemeAbstract
      */
     public function loadENV()
     {
+        // echo __METHOD__."<br>";
         if ($this->_theme) {           
-            $path = $this->_path."/".$this->_theme."/";
+            $path = ROOT.$this->_path.DS.$this->_theme.DS;
+            //echo "path = $path <br>";
             $this->_env = $this->conf->Drivers['INI']->loadINI("theme", $path);
             //echo "<pre>";
             //print_r($this->_env);
@@ -56,8 +61,8 @@ class Theme extends ThemeAbstract
 
     public function loadFile($name)
     {
-        $filename = $this->_path."/".$this->_theme."/".$name.".htm";
-        echo $filename."<br>";
+        $filename = ROOT.DS.$this->_path.DS.$this->_theme.DS.$name.".htm";
+        //echo $filename."<br>";
         if (file_exists($filename)) {
             return file_get_contents($filename);
         } else {

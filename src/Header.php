@@ -11,8 +11,9 @@ trait Header
         // echo __METHOD__."를 호출합니다.<br>";
         // 해더 HTML의 파일의 경로를 확인합니다.
         // 지정한 경로에 상단해더 파일이 있는지 확인후에 값을 읽어옵니다.
-        $basePATH = $this->conf->data("ENV.theme");
+        $basePATH = ROOT.$this->conf->data("ENV.path.theme");
         $filename = $basePATH."/".$this->_theme."/".$this->_env['header'];
+        //echo "상단파일 경로 = ".$filename."<br>";
 
         if (file_exists($filename)) {
             $this->_header = file_get_contents($filename);
