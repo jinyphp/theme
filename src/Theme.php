@@ -25,7 +25,7 @@ class Theme extends ThemeAbstract
         // 객체참조 개선을 위해서 임시저장합니다.
         $this->View = $view;
         $this->App = $view->App;
-        $this->conf = $this->App->Config;
+        // $this->conf = $this->App->Config;
 
     }
 
@@ -55,7 +55,7 @@ class Theme extends ThemeAbstract
 
         // 뷰파일에 테마설정이 없는 경우
         // 기본환경 설정을 적용합니다.
-        return $this->App->Config->data("site.theme");
+        return conf("site.theme");
     }
 
     /**
@@ -63,7 +63,7 @@ class Theme extends ThemeAbstract
      */
     public function themePath()
     {
-        return $this->App->Config->data("ENV.path.theme");
+        return conf("ENV.path.theme");
     }
 
     /**

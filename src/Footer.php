@@ -11,7 +11,7 @@ trait Footer
         // echo __METHOD__."를 호출합니다.<br>";
         // 하단 HTML의 파일의 경로를 확인합니다.
         // 지정한 경로에 하단푸터 파일이 있는지 확인후에 값을 읽어옵니다.
-        $basePATH = ROOT.$this->conf->data("ENV.path.theme");
+        $basePATH = ROOT.conf("ENV.path.theme");
         $filename = $basePATH.DS.$this->_theme.DS.$this->_env['footer'];
 
         if (file_exists($filename)) {
