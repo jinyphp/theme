@@ -28,6 +28,7 @@ class Theme extends ThemeAbstract
         $this->App = $view->App;
         $this->conf = Registry::get("CONFIG");
 
+        
     }
 
     /**
