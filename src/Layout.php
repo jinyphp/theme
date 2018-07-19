@@ -4,6 +4,9 @@ namespace Jiny\Theme;
 
 trait Layout
 {
+    /**
+     * 레아아웃 파일을 읽어 옵니다.
+     */
     public function layout()
     {
         $basePATH = conf("ENV.path.theme");

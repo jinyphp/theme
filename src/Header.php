@@ -4,22 +4,20 @@ namespace Jiny\Theme;
 
 trait Header
 {
-    // 공통적으로 처리되는 상단 내용을 읽어옵니다.
-    // 읽어올 설정파일은 config에 설정되어 있습니다.
+    /**
+     * 해더파일을 읽어 옵니다.
+     * 해더 프로퍼티에 저장을 합니다.
+     */
     public function header()
     {
-        // echo __METHOD__."를 호출합니다.<br>";
-        // 해더 HTML의 파일의 경로를 확인합니다.
-        // 지정한 경로에 상단해더 파일이 있는지 확인후에 값을 읽어옵니다.
+
         $basePATH = ROOT.conf("ENV.path.theme");
         $filename = $basePATH."/".$this->_theme."/".$this->_env['header'];
-        //echo "상단파일 경로 = ".$filename."<br>";
-        //echo "파일이름 =".$this->_env['header'];
 
         if (file_exists($filename)) {
             $this->_header = file_get_contents($filename);
         } else {
-            $this->_header = "해더파일이 없습니다.";
+            $this->_header = "<!--해더파일이 없습니다.-->";
         }
         
         return $this->_header;

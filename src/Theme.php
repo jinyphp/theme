@@ -18,20 +18,24 @@ class Theme extends ThemeAbstract
     // 뷰인스턴스
     public $View;
 
+    /**
+     * 테마 초기화
+     */
     public function __construct($view)
     {
-        //echo __CLASS__."테마를 초기화 합니다.<br>";
-
         // 객체참조 개선을 위해서 임시저장합니다.
         $this->View = $view;
         $this->App = $view->App;
-        // $this->conf = $this->App->Config;
+        $this->conf = Registry::get("CONFIG");
 
     }
 
+    /**
+     * 테마의 설정을 읽어 옵니다.
+     */
     public function isTheme()
     {
-        // 테마 환경 설정을 읽어 옵니다.             
+        // 테마 환경 설정을 읽어 옵니다.          
         if ($this->_theme = $this->themeName()) {
             // 테마 환경설정파일의 경로
             $this->_path = $this->themePath();
@@ -47,9 +51,10 @@ class Theme extends ThemeAbstract
      */
     public function themeName()
     {
+        // 커스텀 테마 확인
+        // 뷰파일에 적용할 테마를 직접 지정을 할 경우
+        // 우선 처리합니다.
         if (isset($this->View->_data['page']['theme'])) {
-            // 뷰파일에 적용할 테마를 직접 지정을 할 경우
-            // 우선 처리합니다.
             return $this->View->_data['page']['theme'];
         }
 
@@ -92,6 +97,9 @@ class Theme extends ThemeAbstract
         return NULL;
     }
 
+    /**
+     * 테마를 랜더링 합니다.
+     */
     public function render($body)
     {
         $header = $this->header();
@@ -102,14 +110,10 @@ class Theme extends ThemeAbstract
             // 레이아웃 파일을 읽어옵니다.
             $layout = $this->layout();
 
-            // 해더를 생성합니다.         
-            // 해더를 치환합니다.
-            
+            // 환경설정에 따라 해더를 치환합니다.
             $layout = str_replace( $this->_env['_header'], $header, $layout);
 
-            // 푸터를 생성합니다.            
-            // 푸터를 치환합니다.
-            
+            // 환경설정에 따라 푸더를 치환합니다.            
             $layout = str_replace( $this->_env['_footer'], $footer, $layout);
 
             // 본문을 치환합니다.    
@@ -117,11 +121,14 @@ class Theme extends ThemeAbstract
 
         } else {
             // 레이아웃이 없는 경우 바로 출력합니다.
-            //echo "레이아웃이 없습니다.<br>";
             $layout = $header.$body.$footer; 
         }
 
         return $layout;
     }
+
+    /**
+     * 
+     */
 
 }
