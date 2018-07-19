@@ -14,6 +14,7 @@ trait Header
         $basePATH = ROOT.$this->conf->data("ENV.path.theme");
         $filename = $basePATH."/".$this->_theme."/".$this->_env['header'];
         //echo "상단파일 경로 = ".$filename."<br>";
+        //echo "파일이름 =".$this->_env['header'];
 
         if (file_exists($filename)) {
             $this->_header = file_get_contents($filename);
@@ -21,10 +22,11 @@ trait Header
             $this->_header = "해더파일이 없습니다.";
         }
         
-        return $this;
+        return $this->_header;
     }
 
     // 해더 내용을 랜더링 합니다.
+    /*
     public function headerRender($viewData=[])
     {
         $prefixdCode = $this->setPrefix(self::PREFIX_START, self::PREFIX_END)->preFixs($this->_header);
@@ -57,6 +59,7 @@ trait Header
 
         return $this->_header;
     }
+    */
 
     /**
      * 저장된 해더body를 읽어옵니다.

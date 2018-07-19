@@ -1,11 +1,11 @@
 <?php
 namespace Jiny\Theme;
 
-use \Jiny\Core\Registry;
+use \Jiny\Core\Registry\Registry;
 
 class Theme extends ThemeAbstract
 {
-    private $Application;
+    private $App;
 
     const PREFIX_START = "{%%";
     const PREFIX_END = "%%}";
@@ -15,60 +15,113 @@ class Theme extends ThemeAbstract
 
     private $_path;
 
-    public function __construct($app)
+    // 뷰인스턴스
+    public $View;
+
+    public function __construct($view)
     {
-        //echo __CLASS__." 객체가 생성이 되었습니다.<br>";
-        $this->Application = $app;
+        //echo __CLASS__."테마를 초기화 합니다.<br>";
 
         // 객체참조 개선을 위해서 임시저장합니다.
-        $this->conf = $this->Application->Config;
-        /// echo "<pre>";
-        // print_r($this->conf);
-        // echo "</pre>";
+        $this->View = $view;
+        $this->App = $view->App;
+        $this->conf = $this->App->Config;
 
-        // 테마 환경 설정을 읽어 옵니다.
-        $this->_theme = $this->Application->Config->data("site.theme");
-        // echo "테마 이름 = ".$this->_theme."<br>";
-        if ($this->_theme) {
+    }
+
+    public function isTheme()
+    {
+        // 테마 환경 설정을 읽어 옵니다.             
+        if ($this->_theme = $this->themeName()) {
             // 테마 환경설정파일의 경로
-            $this->_path = $this->Application->Config->data("ENV.path.theme");
-            //echo "테마 경로 = ".$this->_path."<br>";
-
-            $this->loadENV();
-        } else {
-            // echo "사이트 테마가 설정되어 있지 않습니다.<br>";
-        }
+            $this->_path = $this->themePath();
+            return $this->themeENV($this->_theme, $this->_path);
+        } 
+        
+        // echo "사이트 테마가 설정되어 있지 않습니다.<br>";
+        return NULL;
     }
 
     /**
-     * 테마 환경변수를 읽어 옵니다.
+     * 테마이를을 확인합니다.
      */
-    public function loadENV()
+    public function themeName()
     {
-        // echo __METHOD__."<br>";
-        if ($this->_theme) {           
-            $path = ROOT.$this->_path.DS.$this->_theme.DS;
-            //echo "path = $path <br>";
-            $this->_env = $this->conf->Drivers['INI']->loadINI("theme", $path);
-            //echo "<pre>";
-            //print_r($this->_env);
-            //echo "</pre><hr>";
-        } else {
-            //echo "테마가 설정되어 있지 않습니다.<br>";
+        if (isset($this->View->_data['page']['theme'])) {
+            // 뷰파일에 적용할 테마를 직접 지정을 할 경우
+            // 우선 처리합니다.
+            return $this->View->_data['page']['theme'];
         }
-        return $this;
+
+        // 뷰파일에 테마설정이 없는 경우
+        // 기본환경 설정을 적용합니다.
+        return $this->App->Config->data("site.theme");
+    }
+
+    /**
+     * 테마 파일의 환경설정
+     */
+    public function themePath()
+    {
+        return $this->App->Config->data("ENV.path.theme");
+    }
+
+    /**
+     * 테마의 환경변수를 읽어 옵니다.
+     * 
+     */
+    public function themeENV($file, $path)
+    {
+        if ($file) {           
+            $path = str_replace("/", DS, ROOT.$path.DS.$file.DS);
+            $this->_env = $this->conf->Drivers['INI']->loadINI("theme", $path);
+            return $this;
+        } 
+        
+        //echo "테마가 설정되어 있지 않습니다.<br>";
+        return NULL;     
     }
 
     public function loadFile($name)
     {
         $filename = ROOT.DS.$this->_path.DS.$this->_theme.DS.$name.".htm";
-        //echo $filename."<br>";
         if (file_exists($filename)) {
             return file_get_contents($filename);
-        } else {
-             return NULL;
-        }    
+        }
         
+        return NULL;
+    }
+
+    public function render($body)
+    {
+        $header = $this->header();
+        $footer = $this->footer();
+
+        if ($this->_env['layout']) {
+
+            // 레이아웃 파일을 읽어옵니다.
+            $layout = $this->layout();
+
+            // 해더를 생성합니다.         
+            // 해더를 치환합니다.
+            
+            $layout = str_replace( $this->_env['_header'], $header, $layout);
+
+            // 푸터를 생성합니다.            
+            // 푸터를 치환합니다.
+            
+            $layout = str_replace( $this->_env['_footer'], $footer, $layout);
+
+            // 본문을 치환합니다.    
+            $layout = str_replace( $this->_env['_content'], $body, $layout);
+
+        } else {
+            // 레이아웃이 없는 경우 바로 출력합니다.
+            //echo "레이아웃이 없습니다.<br>";
+            $layout = $header.$body.$footer; 
+        }
+
+        return $layout;
     }
 
 }

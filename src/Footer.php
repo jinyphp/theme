@@ -20,10 +20,11 @@ trait Footer
             $this->_footer = "푸터 파일이 없습니다.";
         }
 
-        return $this;
+        return $this->_footer;
     }
 
     // 푸터 내용을 랜더링 합니다.
+    /*
     public function footerRender($data=[])
     {
         $prefixdCode = $this->setPrefix(self::PREFIX_START, self::PREFIX_END)->preFixs($this->_footer);
@@ -44,5 +45,6 @@ trait Footer
 
         return $this->_footer;
     }
+    */
     
 }
