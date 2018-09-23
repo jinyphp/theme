@@ -1,7 +1,15 @@
 <?php
+/*
+ * This file is part of the jinyPHP package.
+ *
+ * (c) hojinlee <infohojin@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace Jiny\Theme;
 
-abstract class ThemeAbstract
+abstract class Process
 {
     protected $conf;
     protected $_theme;
@@ -13,6 +21,19 @@ abstract class ThemeAbstract
 
     public $_name;
 
+    /**
+     * >>템플릿 메소드 패턴
+     * 테마를 랜더링 합니다.
+     */
+    final public function render($html)
+    {
+        $this->assamble($html);      
+        return $this;
+    }
+
+
+
+    
     /**
      * 동작 테마설정
      */ 
