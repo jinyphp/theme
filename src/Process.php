@@ -11,46 +11,20 @@ namespace Jiny\Theme;
 
 abstract class Process
 {
-    protected $conf;
-    protected $_theme;
-    public $_env=[];
-
-    public $_header;
-    public $_footer;
-    public $_layout;
-
-    public $_name;
-
     /**
-     * >>템플릿 메소드 패턴
-     * 테마를 랜더링 합니다.
+     * 템플릿 메소드 패턴
      */
-    final public function render($html)
+    final public function progress($html)
     {
-        $this->assamble($html);      
-        return $this;
+        $this->algorithm($this->Theme, $html);
     }
 
-
-
-    
     /**
-     * 동작 테마설정
-     */ 
-    public function getTheme()
-    {
-        return $this->_theme;
-    }
+     * 알고리즘 정의
+     */
+    abstract protected function algorithm($theme, $html);
 
-    public function setTheme($theme)
-    {
-        // echo $theme."를 선택하셨습니다.<br>";
-        $this->_theme = $theme;
-        return $this;
-    }
-
-    public function getENV()
-    {
-        return $this->_env;
-    }
+    /**
+     * 
+     */
 }

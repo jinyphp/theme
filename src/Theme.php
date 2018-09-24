@@ -11,20 +11,21 @@ namespace Jiny\Theme;
 
 use \Jiny\Core\Registry\Registry;
 
-class Theme extends process
+class Theme 
 {
-    private $App;
-
-    const PREFIX_START = "{%%";
-    const PREFIX_END = "%%}";
+    //const PREFIX_START = "{%%";
+    //const PREFIX_END = "%%}";
     use PreFix;
 
-    use Header, Footer, Layout;
+    use Header, Footer;
 
-    private $_path;
-
-    // 뷰인스턴스
+    // 인스턴스
+    private $App;
     public $View;
+
+    public $_theme;
+    public $_env=[];
+    public $_path;
 
     /**
      * 테마 초기화
@@ -34,7 +35,26 @@ class Theme extends process
         // 객체참조 개선을 위해서 임시저장합니다.
         $this->View = Registry::get("View"); // $view;
         $this->App = Registry::get("App"); // $view->App;
-        $this->conf = Registry::get("CONFIG");
+        // $this->conf = Registry::get("CONFIG");
+
+        // 매소드 속도개선을 위해서
+        // 초기화 작업을 합니다.
+        $this->_path = conf("ENV.path.theme");
+    }
+
+    /**
+     * 테마를 랜더링 합니다.
+     * 탬플릿 메소드 패턴으로 구현합니다.
+     */
+    public function render($html)
+    {
+        if ($this->_env['layout']) { 
+            (new ThemeLayout($this))->progress($html);
+        } else {
+            // 레이아웃이 없는 경우 바로 출력합니다.
+            (new ThemeShow($this))->progress($html);
+        }        
+        return $this;
     }
 
     /**
@@ -45,7 +65,7 @@ class Theme extends process
         // 테마 환경 설정을 읽어 옵니다.          
         if ($this->_theme = $this->themeName($body)) {
             // 테마 환경설정파일의 경로
-            $this->_path = $this->themePath();
+            $this->_path = $this->path();
             return $this->themeENV($this->_theme, $this->_path);
         } 
         
@@ -73,9 +93,9 @@ class Theme extends process
     /**
      * 테마 파일의 환경설정
      */
-    public function themePath()
+    public function path()
     {
-        return conf("ENV.path.theme");
+        return $this->_path;
     }
 
     /**
@@ -85,7 +105,9 @@ class Theme extends process
     {
         if ($file && $path) {           
             $path = str_replace("/", DS, ROOT.$path.DS.$file.DS);
-            $this->_env = $this->conf->Drivers['INI']->load("theme", $path);
+
+            $Conf = Registry::get("CONFIG");
+            $this->_env = $Conf->Drivers['INI']->load("theme", $path);
             if ($this->_env) {
                 return $this;
             } else {
@@ -108,52 +130,31 @@ class Theme extends process
         return NULL;
     }
 
+
     /**
-     * 레아아웃 파일을 읽어 옵니다.
-     */
-    public function layout()
+     * 테마명을 읽어옵니다.
+     */ 
+    public function getTheme()
     {
-        $basePATH = conf("ENV.path.theme");
-        $filename = ROOT.$basePATH.DS.$this->_theme.DS.$this->_env['layout'];
-        //echo $filename."<br>";
-        if (file_exists($filename)) {
-            return file_get_contents($filename);
-        } else {
-             return "레이아웃 파일이 없습니다.";
-        }    
-        
+        return $this->_theme;
+    }
+
+    /**
+     * 테마를 설정합니다.
+     */
+    public function setTheme($theme)
+    {
+        $this->_theme = $theme;
+        return $this;
     }
 
 
     /**
-     * 템플릿 메소드 패턴
+     * 테마 환경설정 파일을 읽어옵니다.
      */
-    public function assamble($html)
+    public function getENV()
     {
-        $header = $this->header();
-        $footer = $this->footer();
-
-        if ($this->_env['layout']) {
-
-            // 레이아웃 파일을 읽어옵니다.
-            $layout = $this->layout();
-
-            // 환경설정에 따라 해더를 치환합니다.
-            $layout = str_replace( $this->_env['_header'], $header, $layout);
-
-            // 환경설정에 따라 푸더를 치환합니다.            
-            $layout = str_replace( $this->_env['_footer'], $footer, $layout);
-
-            // 본문을 치환합니다.    
-            $layout = str_replace( $this->_env['_content'], $html->_body, $layout);
-  
-
-        } else {
-            // 레이아웃이 없는 경우 바로 출력합니다.
-            $layout = $header.$html->_body.$footer; 
-        }
-
-        $html->_body = $layout;
+        return $this->_env;
     }
 
     /**
