@@ -15,11 +15,15 @@ class ThemeLayout extends process
 {
     public $Theme;
 
+    /**
+     * 
+     */
     public function __construct($theme)
     {
         $this->Theme = $theme;
         
     }
+
 
     /**
      * 레이아웃을 결합합니다.
@@ -53,4 +57,8 @@ class ThemeLayout extends process
         }
 
     }
+
+    /**
+     * 
+     */
 }

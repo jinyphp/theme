@@ -42,6 +42,7 @@ class Theme
         $this->_path = conf("ENV.path.theme");
     }
 
+
     /**
      * 테마를 랜더링 합니다.
      * 탬플릿 메소드 패턴으로 구현합니다.
@@ -56,6 +57,7 @@ class Theme
         }        
         return $this;
     }
+
 
     /**
      * 테마의 설정을 읽어 옵니다.
@@ -72,6 +74,7 @@ class Theme
         // echo "사이트 테마가 설정되어 있지 않습니다.<br>";
         return NULL;
     }
+
 
     /**
      * 테마이를을 확인합니다.
@@ -90,6 +93,7 @@ class Theme
         }  
     }
 
+
     /**
      * 테마 파일의 환경설정
      */
@@ -97,6 +101,7 @@ class Theme
     {
         return $this->_path;
     }
+
 
     /**
      * 테마의 환경변수를 읽어 옵니다.
@@ -120,6 +125,9 @@ class Theme
     }
 
 
+    /**
+     * 
+     */
     public function loadFile($name)
     {
         $filename = ROOT.DS.$this->_path.DS.$this->_theme.DS.$name.".htm";
@@ -138,6 +146,7 @@ class Theme
     {
         return $this->_theme;
     }
+
 
     /**
      * 테마를 설정합니다.
@@ -160,5 +169,4 @@ class Theme
     /**
      * 
      */
-
 }
