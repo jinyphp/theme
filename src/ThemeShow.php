@@ -11,7 +11,7 @@ namespace Jiny\Theme;
 
 use \Jiny\Core\Registry\Registry;
 
-class ThemeShow extends process
+class ThemeShow extends \Jiny\Theme\Process
 {
     public $Theme;
 
