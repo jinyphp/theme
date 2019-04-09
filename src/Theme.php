@@ -47,13 +47,13 @@ class Theme
      * 테마를 랜더링 합니다.
      * 탬플릿 메소드 패턴으로 구현합니다.
      */
-    public function render($html)
+    public function render($html=null)
     {
         if ($this->_env['layout']) { 
-            (new ThemeLayout($this))->progress($html);
+            return (new ThemeLayout($this))->progress($html);
         } else {
             // 레이아웃이 없는 경우 바로 출력합니다.
-            (new ThemeShow($this))->progress($html);
+            return (new ThemeShow($this))->progress($html);
         }        
         return $this;
     }
@@ -62,7 +62,7 @@ class Theme
     /**
      * 테마의 설정을 읽어 옵니다.
      */
-    public function isTheme($body)
+    public function isTheme($body=null)
     {
         // 테마 환경 설정을 읽어 옵니다.          
         if ($this->_theme = $this->themeName($body)) {

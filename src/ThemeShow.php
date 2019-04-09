@@ -29,9 +29,14 @@ class ThemeShow extends \Jiny\Theme\Process
         $header = $theme->header();
         $footer = $theme->footer();
 
-        $layout = $header.$html->getBody().$footer;
-
-        $html->setBody($layout);
+        if ($html) {
+            $layout = $header.$html->getBody().$footer;
+            $html->setBody($layout);
+        } else {
+            // theme() 헬퍼함수용
+            return $layout;
+        }
+        
     }
 
     /**

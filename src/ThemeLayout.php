@@ -46,10 +46,15 @@ class ThemeLayout extends \Jiny\Theme\Process
             // 환경설정에 따라 푸더를 치환합니다.            
             $layout = str_replace( $theme->_env['_footer'], $footer, $layout);
 
-            // 본문을 치환합니다.            
-            $layout = str_replace( $theme->_env['_content'], $html->_body, $layout);
-
-            $html->setBody($layout);
+            if ($html) {
+                // 본문을 치환합니다.            
+                $layout = str_replace( $theme->_env['_content'], $html->_body, $layout);
+                $html->setBody($layout);
+            } else {
+                // theme() 헬퍼함수용
+                return $layout;
+            }
+            
 
         } else {
             echo "테마 레이아웃을 읽어 올수 없습니다.";

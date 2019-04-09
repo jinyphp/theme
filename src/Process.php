@@ -16,7 +16,7 @@ abstract class Process
      */
     final public function progress($html)
     {
-        $this->algorithm($this->Theme, $html);
+        return $this->algorithm($this->Theme, $html);
     }
 
     /**
