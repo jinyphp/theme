@@ -7,13 +7,16 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Jiny\Theme;
+namespace Jiny\Theme\Layout;
 
 use \Jiny\Core\Registry\Registry;
+use Jiny\Filesystem\File;
 
-class ThemeShow extends \Jiny\Theme\Process
+class Show extends \Jiny\Theme\Process
 {
     public $Theme;
+
+    use Header, Footer;
 
     public function __construct($theme)
     {
@@ -24,18 +27,14 @@ class ThemeShow extends \Jiny\Theme\Process
     /**
      * 결합합니다.
      */
-    protected function algorithm($theme, $html)
+    protected function algorithm($theme)
     {
-        $header = $theme->header();
-        $footer = $theme->footer();
+        $header = $this->header();
+        $footer = $this->footer();
 
-        if ($html) {
-            $layout = $header.$html->getBody().$footer;
-            $html->setBody($layout);
-        } else {
-            // theme() 헬퍼함수용
-            return $layout;
-        }
+        $layout = $header."{(content)}".$footer;
+        return $layout;
+        // $html->setBody($layout);
         
     }
 

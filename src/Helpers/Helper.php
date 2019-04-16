@@ -8,15 +8,28 @@
  * file that was distributed with this source code.
  */
 
-if (! function_exists('theme')) {
+namespace Jiny;
 
-    function theme()
-    {
-        // 테마처리
-        $theme = new \Jiny\Theme\Theme();
-        if ($theme->isTheme()) {
-            return $theme->render();        
+use \Jiny\Theme\Theme;
+use \Jiny\Theme\Layout\Layout;
+use \Jiny\Theme\Layout\Show;
+
+if (! function_exists('theme')) {
+    function theme($body) {
+        if (func_num_args()) {
+            $theme = Theme::instance();
+            if ($theme->isTheme($body)) {
+                return $theme->render($body);        
+            }
+        } else {
+            return $theme;
         }
+    } 
+}
+
+if (! function_exists('layout')) {
+    function layout() {
+        $theme = Theme::instance();
+        return (new Layout($theme))->progress();
     }
-    
 }

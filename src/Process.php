@@ -14,15 +14,15 @@ abstract class Process
     /**
      * 템플릿 메소드 패턴
      */
-    final public function progress($html)
+    final public function progress()
     {
-        return $this->algorithm($this->Theme, $html);
+        return $this->algorithm($this->Theme);
     }
 
     /**
      * 알고리즘 정의
      */
-    abstract protected function algorithm($theme, $html);
+    abstract protected function algorithm($theme);
 
     /**
      * 
