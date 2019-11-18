@@ -19,16 +19,26 @@ if (! function_exists('theme')) {
         if (func_num_args()) {
             $theme = Theme::instance();
 
-            // 선택 테마를 설정합니다.
+            // 기본값, 환결설정 테마
+            // 테마 설정값 수정 합니다.
             if ($theme_name) {
                 $theme->setTheme($theme_name);
             }
 
-            if ($theme->isTheme($body)) {
+            // 테마정보
+            if ($theme_name = $theme->isTheme($body)) {
                 // 테마를 결합합니다.
-                return $theme->render($body);        
+                // echo "테마를 결합합니다.";
+
+                $theme->Info = new \Jiny\Theme\Infomation($theme);
+                $theme->Info->load();
+                // return $this->_env;
+
+                return $theme->render($body);
+
             } else {
                 // 테마가 존재하지 않는 경우
+                // echo "테마 없음";
                 // 본문을 반환합니다.
                 return $body->getContent();
             }
@@ -57,4 +67,9 @@ if (! function_exists('layout')) {
         $theme = Theme::instance();
         return (new Layout($theme))->progress();
     }
+}
+
+function siteTheme()
+{
+    return \Jiny\conf("site.theme");
 }

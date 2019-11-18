@@ -26,17 +26,6 @@ trait Header
         return $this->header;
     }
 
-    private function headerFile()
-    {
-        $basePATH = ROOT.$this->Theme->path();
-        return File::pathImplode([
-            $basePATH,
-            $this->Theme->theme,
-            $this->Theme->_env['header']
-        ]);
-        // return  $basePATH.File::DS.$this->theme.File::DS.$this->_env['header'];
-    }
-
     /**
      * 저장된 해더body를 읽어옵니다.
      */
@@ -45,9 +34,21 @@ trait Header
         return $this->header;
     }
 
+    private function headerFile()
+    {
+        $file = $this->Theme->path();
+        return implode([
+            $file, 
+            // str_replace("/",DIRECTORY_SEPARATOR,$this->Theme->themeName), 
+            // DIRECTORY_SEPARATOR, 
+            $this->Theme->Info->getHeader()
+        ]);
+    }    
+
     private function loadHeader($filename)
     {
-        if ($body = File::read($filename)) {
+        if (file_exists($filename)) {
+            $body = file_get_contents($filename);
             return $body;
         } else {
             return "<!--해더파일이 없습니다.-->";

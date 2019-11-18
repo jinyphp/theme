@@ -26,16 +26,6 @@ trait Footer
         return $this->footer;
     }
 
-    private function footerFile()
-    {
-        $basePATH = ROOT.$this->Theme->path();
-        return File::pathImplode([
-            $basePATH,
-            $this->Theme->theme,
-            $this->Theme->_env['footer']
-        ]);
-    }
-
     /**
      * 저장된 푸터를 읽어옵니다.
      */
@@ -44,9 +34,23 @@ trait Footer
         return $this->footer;
     }
 
+    private function footerFile()
+    {
+        $file = $this->Theme->path();
+        return implode([
+            $file, 
+            // str_replace("/",DIRECTORY_SEPARATOR,$this->Theme->themeName), 
+            // DIRECTORY_SEPARATOR, 
+            $this->Theme->Info->getFooter()
+        ]);
+    }
+
+    
+
     private function loadFooter($filename)
     {
-        if ($body = File::read($filename)) {
+        if (file_exists($filename)) {
+            $body = file_get_contents($filename);
             return $body;
         } else {
             return "<!--푸터 파일이 없습니다.-->";

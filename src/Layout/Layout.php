@@ -33,18 +33,19 @@ class Layout extends \Jiny\Theme\Process
      */
     protected function algorithm($theme)
     {
+        
         $header = $this->header();
         $footer = $this->footer();
 
-        $filename = $this->layoutFile();  
+        $filename = $this->layoutFile();
         if (file_exists($filename)) {
             $layout = file_get_contents($filename);
 
             // 환경설정에 따라 해더를 치환합니다.
-            $layout = str_replace( $this->Theme->_env['_header'], $header, $layout);
+            $layout = str_replace( $this->Theme->Info->getEnv()['_header'], $header, $layout);
 
             // 환경설정에 따라 푸더를 치환합니다.            
-            $layout = str_replace( $this->Theme->_env['_footer'], $footer, $layout);
+            $layout = str_replace( $this->Theme->Info->getEnv()['_footer'], $footer, $layout);
 
             return $layout;           
         } else {
@@ -56,11 +57,12 @@ class Layout extends \Jiny\Theme\Process
     private function layoutFile()
     {
         // 레이아웃 파일을 읽어옵니다.
-        $basePATH = $this->Theme->path();
-        return File::pathImplode([
-            ROOT.$basePATH,
-            $this->Theme->theme,
-            $this->Theme->_env['layout']
+        $file = $this->Theme->path();
+        return implode([
+            $file, 
+            // str_replace("/", DIRECTORY_SEPARATOR, $this->Theme->themeName), 
+            // DIRECTORY_SEPARATOR, 
+            $this->Theme->Info->getLayout()
         ]);
     }
 
