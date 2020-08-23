@@ -9,14 +9,116 @@
  */
 namespace Jiny\Theme;
 
-use \Jiny\Core\Registry\Registry;
-use \Jiny\Theme\Layout\Layout;
-use \Jiny\Theme\Layout\Show;
+//use \Jiny\Core\Registry\Registry;
+//use \Jiny\Theme\Layout\Layout;
+//use \Jiny\Theme\Layout\Show;
+//use Jiny\Filesystem\File;
 
-use Jiny\Filesystem\File;
-
+/**
+ * 테마 관리 객체
+ */
 class Theme 
 {
+    use \Jiny\Petterns\Singleton; // 싱글턴 패턴 적용
+
+    /**
+     * 테마 초기화
+     */
+    public function __construct($name=null, $path=null)
+    {
+        $this->setName($name);
+        $this->setPath($path);
+    }
+
+    /**
+     * 테마를 선택합니다.
+     */
+    public $_name; // 테마이름
+    public function setName($name) { $this->_name = $name; return $this; }
+
+    /**
+     * 선택한 테마의 경로명을 선택합니다.
+     */
+    public $_path; // 테마 파일 경로
+    public function setPath($path=null) { 
+        if($path) {
+            $this->_path = $path; 
+        } else {
+            $this->_path = "../theme/".$this->_name;//."/src";
+        }
+        return $this; 
+    }
+
+    private function init($name=null, $path=null)
+    {
+        // echo __METHOD__;
+    }
+
+    private $_layout;
+    public function layout($file=null)
+    {
+        if (!$this->_layout) {
+            $this->_layout = new \Jiny\Theme\Layout($this);
+            if ($file) $this->_layout->setFile($file);
+        }
+        return $this->_layout;
+    }
+
+    private $_header;
+    public function header()
+    {
+        if (!$this->_header) {
+            $this->_header = new \Jiny\Theme\Header($this);
+        }
+        
+        return $this->_header;
+    }
+
+    public function footer()
+    {
+        $layout = new \Jiny\Theme\Footer($this);
+        return $layout;
+    }
+
+    public function nav()
+    {
+        $layout = new \Jiny\Theme\Nav($this);
+        return $layout;
+    }
+
+    // 테마안에 있는 리소스를 읽어옵니다.
+    public function resource($file, $args=[])
+    {
+        $subpath = DIRECTORY_SEPARATOR."src".DIRECTORY_SEPARATOR;
+        $file = $this->_path.$subpath.$file;
+        return \jiny\html_get_contents($file);
+    }
+
+
+
+
+
+
+    /**
+     * 테마정보
+     */
+    private $path;
+    public function path()
+    {
+        /*
+        if(isset($this->path)) {
+            return $this->path;
+        } else {
+            $this->path = conf("ENV.path.theme");
+            return $this->path;
+        }
+        */
+    }
+
+
+
+
+
 
     use PreFix;
 
@@ -27,33 +129,9 @@ class Theme
     public $_env=[];
     const FRONTMATTER = "page";
     
-    /**
-     * 인스턴스
-     */
-    private static $Instance;
 
-    /**
-     * 싱글턴 인스턴스를 생성합니다.
-     */
-    public static function instance()
-    {
-        if (!isset(self::$Instance)) {
-            // 자기 자신의 인스턴스를 생성합니다.                
-            self::$Instance = new self();
-            return self::$Instance;
-        } else {
-            // 인스턴스가 중복
-            return self::$Instance; 
-        }
-    }
 
-    /**
-     * 테마 초기화
-     */
-    public function __construct($view=null)
-    {
-        $this->path();
-    }
+    
 
     public $theme;
 
@@ -146,19 +224,7 @@ class Theme
 
 
 
-    public $path;
-    /**
-     * 테마 경로
-     */
-    public function path()
-    {
-        if(isset($this->path)) {
-            return $this->path;
-        } else {
-            $this->path = conf("ENV.path.theme");
-            return $this->path;
-        }
-    }
+
 
     private function themePath()
     {
