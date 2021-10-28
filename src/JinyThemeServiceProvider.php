@@ -36,9 +36,11 @@ class JinyThemeServiceProvider extends ServiceProvider
     public function register()
     {
         /* 라이브와이어 컴포넌트 등록 */
+        /*
         $this->app->afterResolving(BladeCompiler::class, function () {
             Livewire::component('LiveTreeJson', \Jiny\Theme\Http\Livewire\LiveTreeJson::class);
         });
+        */
     }
 
 
