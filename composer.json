@@ -16,7 +16,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Jiny\\Theme":"src/"
+            "Jiny\\Theme\\":"src/"
         },
         "files" : [
             "src/Helpers/Helper.php"
