@@ -1,0 +1,32 @@
+{
+    "name": "jiny/theme",
+    "description": "jinyPHP Framwork Theme",
+    "keywords": [
+        "jinyPHP",
+        "framwork",
+        "theme"
+    ],
+    "homepage": "http://jiny.hojin.io",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "hojinlee",
+            "email": "infohojin@gmail.com",
+            "homepage": "http://hojin.io"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">= 7.0",
+        "jiny/filesystem": "^0.0.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Jiny\\Theme\\": "src/"
+        },
+        "files": [
+            "src/Helpers/Helper.php"
+        ]
+    }
+}

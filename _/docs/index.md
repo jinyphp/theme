@@ -1,4 +1,4 @@
-# jinyTheme
+# jinyTheme 0.1
 
 테마객체 생성
 

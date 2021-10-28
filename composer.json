@@ -1,32 +1,38 @@
 {
     "name": "jiny/theme",
-    "description": "jinyPHP Framwork Theme",
-    "keywords": [
-        "jinyPHP",
-        "framwork",
-        "theme"
-    ],
-    "homepage": "http://jiny.hojin.io",
+    "description": "jinyPHP Theme Manager for Laravel",
     "type": "library",
-    "license": "MIT",
+    "license": "GPL",
     "authors": [
         {
             "name": "hojinlee",
-            "email": "infohojin@gmail.com",
-            "homepage": "http://hojin.io"
+            "email": "infohojin@gmail.com"
         }
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "require": {
-        "php": ">= 7.0",
-        "jiny/filesystem": "^0.0.1"
+        "php": "^7.3|^8.0"
+
     },
     "autoload": {
         "psr-4": {
-            "Jiny\\Theme\\": "src/"
+            "Jiny\\Theme":"src/"
         },
-        "files": [
+        "files" : [
             "src/Helpers/Helper.php"
         ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Jiny\\Theme\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Jiny\\Theme\\JinyUIServiceProvider"
+            ]
+        }
     }
+
 }
