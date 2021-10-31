@@ -15,11 +15,9 @@ class HtmlDom
         $this->dom = [];
     }
 
-    
     public function find($tagname)
     {
         $this->_find = [];
-        //dd($this->dom);
         foreach($this->dom as &$tag) {
             $this->findTag($tag, $tagname);
         }
@@ -30,28 +28,17 @@ class HtmlDom
     public $_find;
     private function findTag(&$dom, $tagname)
     {
-        
-        //if($this->i==3) dd($dom);
-
         foreach($dom->item as &$tag) {
             if(is_object($tag)) {
                 if (isset($tag->tagname)) {
-                    //echo $tag->tagname;
                     if($tag->tagname == $tagname) {
                         $this->_find []= $tag;
                     }
                 }
 
-                //dump($tag);
-                //dump($tag->item);
                 $this->findTag($tag, $tagname);
-
-                
-                
-                //
-                //$this->i++;
             }
-        }        
+        }
     }
 
 
@@ -63,7 +50,7 @@ class HtmlDom
         $el->item = [];
         $el->next = strpos($html,"<",0);
         $el->dom []= substr($html,0,$el->next);
-        
+
         $el = $this->element($html,$el->next);
         $tagname = $el->tagname;
         $this->dom[ $tagname ] = $el;
@@ -71,7 +58,7 @@ class HtmlDom
         $el = $this->element($html,$el->next);
         $tagname = $el->tagname;
         $this->dom[ $tagname ] = $el;
-        
+
         return $this->dom;
     }
 
@@ -80,7 +67,7 @@ class HtmlDom
         $pos = strpos($code," ");
         $code = substr($code,$pos+1);
         $code = explode('" ',$code);
-        
+
         $attr = [];
         foreach($code as $item) {
             $k = explode("=",$item);
@@ -89,7 +76,7 @@ class HtmlDom
                     if($k[0] == "class") {
                         $val = trim($k[1], '"');
                         $attr[ $k[0] ] = explode(" ",$val);
-                    } else 
+                    } else
                     if($k[0] == "style") {
                         $val = trim($k[1], '"');
                         $attr[ $k[0] ] = explode(";",$val);
@@ -100,7 +87,7 @@ class HtmlDom
                 }
             }
         }
-        
+
         return $attr;
     }
 
@@ -114,19 +101,11 @@ class HtmlDom
 
         // 테그 시작검사
         $el->pos = strpos($html,"<",$el->next);
-        //$dom['pos'] = $el['pos'];
         $el->len = strpos($html,">",$el->pos) - $el->pos +1;
-        //$dom['len'] = $el['len'];
-        
-        
 
         // 테그명 추출
         $code = substr($html,$el->pos + 1, $el->len - 2);
-        //$el['code'] = $code;
         $el->tagname = explode(" ", $code)[0];
-        //$dom['tagname'] = $el['tagname'];
-
-        
 
         // 이전 문자열 추출
         $el->text = substr($html, $el->next, $el->pos - $el->next);
@@ -141,24 +120,15 @@ class HtmlDom
         // 다음 검색요소 위치 결정
         $el->next = $el->pos + $el->len;
 
-
         // 테그타입
         $el->pare = $this->tagType($el->tagname);
 
-        
-
-        
-
-        // 테그타입별 재귀호출      
+        // 테그타입별 재귀호출
         while($el->pare == true) {
-            
-            //dump($el);
-    
+
             $e = $this->element($html,$el->next);
             $el->next = $e->next; //다음요소
 
-            
-            
             if(($e->tagname)[0] == "/") {
 
                 // 종료테그 탈출
@@ -168,24 +138,24 @@ class HtmlDom
                     $el->item []= $text;
                 }
 
+                /*
                 if($e->tagname == "/head") {
                     //dump($el);
                 //dd($e);
                 }
-                
+                */
+
                 break;
             } else {
                 // 서브 요소 저장, 주석 요소는 제외
                 if($e->tagname != "!--") {
                     $el->dom []= $e;
                     $el->item []= $e;
-                }                
+                }
             }
 
-            //if($el->tagname == "link") dd($el);
         }
 
-        //dd($el);
         return $el;
     }
 
@@ -202,7 +172,7 @@ class HtmlDom
         if(!empty($str)) {
             return implode("\n",$str);
         }
-        
+
         return false;
     }
 
@@ -216,9 +186,8 @@ class HtmlDom
             case 'html': return true;
             case 'head': return true;
             case 'meta': return false;
-            
+
             case 'title': return true;
-            //case '/title': return true;
 
             case 'script': return true;
             case 'body': return true;

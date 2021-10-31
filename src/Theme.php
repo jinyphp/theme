@@ -1,7 +1,7 @@
-<?php 
+<?php
 namespace Jiny\Theme;
 
-class Theme 
+class Theme
 {
     /**
      * 싱글턴 인스턴스를 생성합니다.
@@ -10,20 +10,20 @@ class Theme
     public static function instance()
     {
         if (!isset(self::$Instance)) {
-            // 자기 자신의 인스턴스를 생성합니다.                
+            // 자기 자신의 인스턴스를 생성합니다.
             self::$Instance = new self();
 
             return self::$Instance;
         } else {
             // 인스턴스가 중복
-            return self::$Instance; 
+            return self::$Instance;
         }
     }
 
     // 테마명
     const THEME = "theme"; //리소스 폴더명
     public $theme;
-    
+
     public function setTheme($theme)
     {
         $this->theme = $theme;
@@ -35,6 +35,17 @@ class Theme
         return $this->theme;
     }
 
+    public function isTheme()
+    {
+        if ($this->theme) {
+            return $this->theme;
+        }
+        return false;
+    }
+
+    /**
+     * 테마의 App 파일이 존재하는지 검사
+     */
     public function isThemeApp()
     {
         if ($this->theme) {
@@ -56,6 +67,7 @@ class Theme
     {
         return self::THEME;
     }
+
 
     public function getThemeList()
     {
