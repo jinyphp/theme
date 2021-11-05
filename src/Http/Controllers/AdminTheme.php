@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 
 use Jiny\Members\Http\Controllers\CrudController;
 
-class AdminTheme extends CrudController
+class AdminTheme //extends CrudController
 {
     public function __construct()
     {

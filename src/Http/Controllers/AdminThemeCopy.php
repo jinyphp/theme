@@ -18,7 +18,7 @@ use Jiny\Members\Http\Controllers\CrudController;
 use KubAT\PhpSimple\HtmlDomParser;
 
 
-class AdminThemeCopy extends CrudController
+class AdminThemeCopy //extends CrudController
 {
     public $theme;
     public $url;
