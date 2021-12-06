@@ -21,7 +21,7 @@ class JinyThemeServiceProvider extends ServiceProvider
 
         ## css, javascript등 페이지의 골격 뼈대를 읽어 옵니다.
         Blade::component(\Jiny\Theme\View\Components\Theme\App::class, "theme-app");
-        
+
 
         ## app에 테마의 레이아웃을 결합합니다.
         Blade::component(\Jiny\Theme\View\Components\ThemeLayout::class, "theme-layout");
@@ -35,18 +35,13 @@ class JinyThemeServiceProvider extends ServiceProvider
 
     public function register()
     {
-        /* 라이브와이어 컴포넌트 등록 */
-        /*
-        $this->app->afterResolving(BladeCompiler::class, function () {
-            Livewire::component('LiveTreeJson', \Jiny\Theme\Http\Livewire\LiveTreeJson::class);
-        });
-        */
+
     }
 
 
     private function Directive()
     {
-        
+
         // 테마설정
         Blade::directive('setTheme', function ($args) {
             $expression = Blade::stripParentheses($args);
@@ -69,11 +64,11 @@ class JinyThemeServiceProvider extends ServiceProvider
                 for($i=0; $i<count($base);$i++) {
                     if($base[$i] == "theme") break;
                     $path = $base[$i].".".$path;
-                }              
+                }
             }
 
             $expression = '"'."theme.".$path.'"';
-            
+
             return "<?php echo \$__env->make({$expression}, \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>";
         });
     }

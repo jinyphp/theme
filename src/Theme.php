@@ -78,6 +78,6 @@ class Theme
             return json_decode($text,true);
         }
 
-        return false;
+        return [];
     }
 }
