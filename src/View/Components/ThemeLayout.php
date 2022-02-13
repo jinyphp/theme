@@ -11,10 +11,10 @@ class ThemeLayout extends Component
     public function __construct($theme=null)
     {
         if($theme) {
-            theme()->setTheme($theme);
+            xTheme()->setTheme($theme);
             $this->theme_name = $theme;
         } else {
-            $this->theme_name = theme()->getTheme();
+            $this->theme_name = xTheme()->getTheme();
         }
     }
 
@@ -22,9 +22,9 @@ class ThemeLayout extends Component
     {
         //dd("this is layout");
         if ($this->theme_name) {
-            $path = theme()->path();
+            $path = xTheme()->path();
             $layout = $path.'.'.$this->theme_name.".layout";
-            
+
             if (View::exists($layout)) {
                 //dd("레이아웃 있음".$layout);
                 // 테마 리소스가 있는 경우

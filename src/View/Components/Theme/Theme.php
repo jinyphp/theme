@@ -12,14 +12,14 @@ class Theme extends Component
     public function __construct($theme=null)
     {
         if($theme) {
-            theme()->setTheme($theme);
+            xTheme()->setTheme($theme);
             $this->theme_name = $theme;
         }
     }
 
     public function render()
     {
-        $Theme = theme(); // 테마 싱글턴 인스턴스
+        $Theme = xTheme(); // 테마 싱글턴 인스턴스
         if($Theme->isTheme()) {
 
             // App.blade.php 파일존재 확인

@@ -15,24 +15,24 @@ class ThemeSidebar extends Component
     public function __construct($theme=null)
     {
         if($theme) {
-            theme()->setTheme($theme);
+            xTheme()->setTheme($theme);
             $this->theme_name = $theme;
         } else {
-            $this->theme_name = theme()->getTheme();
-        }     
+            $this->theme_name = xTheme()->getTheme();
+        }
     }
 
     public function render()
     {
         if($this->theme_name) {
-            $path = theme()->path();
+            $path = xTheme()->path();
             if (View::exists($path.".".$this->theme_name.'.sidebar')) {
-                // 테마 리소스가 있는 경우          
+                // 테마 리소스가 있는 경우
                 $res = view($path.".".$this->theme_name.'.sidebar');
-                return $res;    
+                return $res;
             }
         }
-        
+
         // 컴포넌트 리소스로 대체하여 출력함
         return view('jinytheme::components.layouts.sidebar');
     }

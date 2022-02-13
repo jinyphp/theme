@@ -16,6 +16,9 @@ class JinyThemeServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         $this->loadViewsFrom(__DIR__.'/../resources/views', $this->package);
 
+        // 데이터베이스
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+
         ## 테마를 선택하고 app과 컨덴츠를 결합합니다.
         Blade::component(\Jiny\Theme\View\Components\Theme\Theme::class, "theme");
 
@@ -29,13 +32,20 @@ class JinyThemeServiceProvider extends ServiceProvider
         Blade::component(\Jiny\Theme\View\Components\ThemeSidebar::class, "theme-sidebar");
         Blade::component(\Jiny\Theme\View\Components\ThemeMain::class, "theme-main");
 
+
+        // 디자인
+
         $this->Directive();
 
     }
 
     public function register()
     {
+        /* 라이브와이어 컴포넌트 등록 */
+        $this->app->afterResolving(BladeCompiler::class, function () {
 
+            Livewire::component('ThemeInstall', \Jiny\Theme\Http\Livewire\ThemeInstall::class);
+        });
     }
 
 
@@ -45,13 +55,39 @@ class JinyThemeServiceProvider extends ServiceProvider
         // 테마설정
         Blade::directive('setTheme', function ($args) {
             $expression = Blade::stripParentheses($args);
-            \Jiny\UI\Theme::instance()->setTheme($expression);
+            xTheme()->setTheme($expression);
         });
 
         // 테마안에 있는 리소스를 읽어 옵니다.
         Blade::directive('theme', function ($args) {
             $expression = Blade::stripParentheses($args);
-            $path = trim($expression,'"');
+            $name = trim($expression,'"');
+            $name = trim($expression,"'");
+            $name = trim($name,'/');
+
+            $name = str_replace("/",".",$name);
+
+            $path = "";
+            /*
+
+            $name = str_replace('/','.',$name);
+
+
+            //dd("aaa");
+            $viewBasePath = Blade::getPath();
+            $base = dirname(trim($viewBasePath,'\/'));
+            $base = str_replace(['/','\\'], ".", $base);
+            $base = array_reverse(explode(".",$base));
+            for($path="", $i=0; $i<count($base);$i++) {
+                if($base[$i] == "theme") break;
+                $path = $base[$i].".".$path;
+            }
+            */
+
+            //dd($path);
+
+            /*
+
 
             // 상대경로 parsing
             if($path[0] == ".") {
@@ -66,10 +102,11 @@ class JinyThemeServiceProvider extends ServiceProvider
                     $path = $base[$i].".".$path;
                 }
             }
+            */
 
-            $expression = '"'."theme.".$path.'"';
-
+            $expression = '"'."theme.".$path.$name.'"';
             return "<?php echo \$__env->make({$expression}, \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>";
+
         });
     }
 
