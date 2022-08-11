@@ -43,25 +43,29 @@ class JinyThemeServiceProvider extends ServiceProvider
     private function themeDir()
     {
         $path = resource_path('views/theme');
-        $dir = scandir($path);
-        $themes = [];
-        foreach($dir as $item) {
-            if($item == '.' || $item == '..') continue;
-            if($item[0] == '.') continue;
-            //dump($item);
-            if(is_dir($path.DIRECTORY_SEPARATOR.$item)) {
-                //$vendor = $item;
-                $dir2 = scandir($path.DIRECTORY_SEPARATOR.$item);
-                foreach($dir2 as $item2) {
-                    if($item2 == '.' || $item2 == '..') continue;
-                    if($item2[0] == '.') continue;
-                    if(is_dir($path.DIRECTORY_SEPARATOR.$item.DIRECTORY_SEPARATOR.$item2)) {
-                        $themes []= $item."/".$item2;
+        if (file_exists($path) && is_dir($path)) {
+            $dir = scandir($path);
+            $themes = [];
+            foreach($dir as $item) {
+                if($item == '.' || $item == '..') continue;
+                if($item[0] == '.') continue;
+                //dump($item);
+                if(is_dir($path.DIRECTORY_SEPARATOR.$item)) {
+                    //$vendor = $item;
+                    $dir2 = scandir($path.DIRECTORY_SEPARATOR.$item);
+                    foreach($dir2 as $item2) {
+                        if($item2 == '.' || $item2 == '..') continue;
+                        if($item2[0] == '.') continue;
+                        if(is_dir($path.DIRECTORY_SEPARATOR.$item.DIRECTORY_SEPARATOR.$item2)) {
+                            $themes []= $item."/".$item2;
+                        }
                     }
                 }
             }
+            return $themes;
         }
-        return $themes;
+
+        return [];
     }
 
     private function themeComponents($theme)
