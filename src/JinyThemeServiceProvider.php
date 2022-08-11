@@ -32,18 +32,68 @@ class JinyThemeServiceProvider extends ServiceProvider
         Blade::component(\Jiny\Theme\View\Components\ThemeSidebar::class, "theme-sidebar");
         Blade::component(\Jiny\Theme\View\Components\ThemeMain::class, "theme-main");
 
-
-        // 디자인
+        // 테마 컴포넌트 등록
+        foreach($this->themeDir() as $theme) {
+            $this->themeComponents($theme);
+        }
 
         $this->Directive();
-
     }
+
+    private function themeDir()
+    {
+        $path = resource_path('views/theme');
+        $dir = scandir($path);
+        $themes = [];
+        foreach($dir as $item) {
+            if($item == '.' || $item == '..') continue;
+            if($item[0] == '.') continue;
+            //dump($item);
+            if(is_dir($path.DIRECTORY_SEPARATOR.$item)) {
+                //$vendor = $item;
+                $dir2 = scandir($path.DIRECTORY_SEPARATOR.$item);
+                foreach($dir2 as $item2) {
+                    if($item2 == '.' || $item2 == '..') continue;
+                    if($item2[0] == '.') continue;
+                    if(is_dir($path.DIRECTORY_SEPARATOR.$item.DIRECTORY_SEPARATOR.$item2)) {
+                        $themes []= $item."/".$item2;
+                    }
+                }
+            }
+        }
+        return $themes;
+    }
+
+    private function themeComponents($theme)
+    {
+        $path = resource_path('views/theme');
+        $path = $path.DIRECTORY_SEPARATOR.$theme.DIRECTORY_SEPARATOR."components";
+        $path = str_replace('/',DIRECTORY_SEPARATOR,$path);
+        //dump($path);
+        if(is_dir($path)) {
+            $dir = scandir($path);
+
+            //$this->callAfterResolving(BladeCompiler::class, function ($dir, $theme) {
+                foreach($dir as $item) {
+                    if($item == '.' || $item == '..') continue;
+                    $this->registerComponent($item, $theme);
+                }
+            //});
+        }
+    }
+
+    private function registerComponent(string $item, string $theme)
+    {
+        $name = str_replace('.blade.php', '', $item);
+        $component = "theme.".str_replace('/','.',$theme).".components.".$name;
+        Blade::component($component, 'theme-'.$name);
+    }
+
 
     public function register()
     {
         /* 라이브와이어 컴포넌트 등록 */
         $this->app->afterResolving(BladeCompiler::class, function () {
-
             Livewire::component('ThemeInstall', \Jiny\Theme\Http\Livewire\ThemeInstall::class);
         });
     }
@@ -51,7 +101,6 @@ class JinyThemeServiceProvider extends ServiceProvider
 
     private function Directive()
     {
-
         // 테마설정
         Blade::directive('setTheme', function ($args) {
             $expression = Blade::stripParentheses($args);

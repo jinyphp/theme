@@ -67,6 +67,12 @@ class Theme
     }
 
 
+    public function view($resource, $data=[])
+    {
+        $name = str_replace("/",".",$this->theme);
+        return view("theme.".$name.".".$resource, $data);
+    }
+
     public function getThemeList()
     {
         $path = resource_path("views/".self::THEME);
