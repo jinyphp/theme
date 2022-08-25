@@ -67,6 +67,15 @@ class JinyThemeServiceProvider extends ServiceProvider
 
 
         $this->Directive();
+
+        // artisan 명령등록
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                \Jiny\Theme\Console\Commands\ThemeGetUrl::class,
+                \Jiny\Theme\Console\Commands\ThemeActive::class
+            ]);
+        }
+
     }
 
 

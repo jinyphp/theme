@@ -12,7 +12,8 @@
     "minimum-stability": "dev",
     "require": {
         "php": "^7.3|^8.0",
-        "livewire/livewire": "^2.7"
+        "livewire/livewire": "^2.7",
+        "guzzlehttp/guzzle": "^7.4"
 
     },
     "autoload": {
