@@ -8,7 +8,7 @@ namespace Jiny\Theme\View\Components;
 use Illuminate\View\Component;
 use Illuminate\Support\Facades\View;
 
-class ThemeSidebar extends Component
+class ThemeFooter extends Component
 {
     public $theme_name;
 
@@ -25,13 +25,13 @@ class ThemeSidebar extends Component
     public function render()
     {
         if($this->theme_name) {
-            $viewFile = $this->theme_name.'.sidebar';
+            $viewFile = $this->theme_name.'.footer';
             if (View::exists($viewFile)) {
                 return view($viewFile);
             }
         }
 
-        return $this->theme_name." 테마 폴더안에 sidebar.blade.php 파일이 없습니다.";
+        return $this->theme_name." 테마 폴더안에 footer.blade.php 파일이 없습니다.";
         // 컴포넌트 리소스로 대체하여 출력함
         // return view('jinytheme::components.layouts.sidebar');
     }

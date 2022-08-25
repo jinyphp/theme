@@ -1,14 +1,11 @@
 <?php
-/**
- * 테마, 사이드바 디자인 설정 컴포넌트
- * 메뉴코드 생성 함수포함
- */
+
 namespace Jiny\Theme\View\Components;
 
 use Illuminate\View\Component;
 use Illuminate\Support\Facades\View;
 
-class ThemeSidebar extends Component
+class ThemeHeader extends Component
 {
     public $theme_name;
 
@@ -25,13 +22,13 @@ class ThemeSidebar extends Component
     public function render()
     {
         if($this->theme_name) {
-            $viewFile = $this->theme_name.'.sidebar';
+            $viewFile = $this->theme_name.'.header';
             if (View::exists($viewFile)) {
                 return view($viewFile);
             }
         }
 
-        return $this->theme_name." 테마 폴더안에 sidebar.blade.php 파일이 없습니다.";
+        return $this->theme_name." 테마 폴더안에 header.blade.php 파일이 없습니다.";
         // 컴포넌트 리소스로 대체하여 출력함
         // return view('jinytheme::components.layouts.sidebar');
     }

@@ -12,6 +12,9 @@ class Theme
         if (!isset(self::$Instance)) {
             // 자기 자신의 인스턴스를 생성합니다.
             self::$Instance = new self();
+
+            //설정파일 로드
+            self::$Instance->setting = config("jiny.theme.setting");
         }
 
         return self::$Instance;
@@ -20,6 +23,7 @@ class Theme
     // 테마명
     const THEME = "theme"; //리소스 폴더명
     public $theme;
+    public $setting;
     //public $vendor, $name;
 
     public function setTheme($theme)
@@ -33,13 +37,32 @@ class Theme
         return $this->theme;
     }
 
+    public function getName()
+    {
+        return $this->theme;
+    }
+
     public function isTheme()
     {
         if ($this->theme) {
-            return $this->theme;
+            // 경로 추출
+            $path = base_path().DIRECTORY_SEPARATOR.$this->setting['path'];
+            if(!is_dir($path)) {
+                mkdir($path);
+            }
+
+            // 폴더 검사
+            $themePath = $path.DIRECTORY_SEPARATOR.str_replace('.', DIRECTORY_SEPARATOR, $this->theme);
+            if(is_dir($themePath)) {
+                return $this->theme;
+            }
         }
+
+        // 테마 폴더가 존재하지 않음
         return false;
     }
+
+
 
     /**
      * 테마의 App 파일이 존재하는지 검사
@@ -47,7 +70,8 @@ class Theme
     public function isThemeApp()
     {
         if ($this->theme) {
-            return self::THEME.".".$this->theme.'.app';
+            return $this->theme.'.app';
+            //return self::THEME.".".$this->theme.'.app';
         }
         return false;
     }
@@ -63,7 +87,8 @@ class Theme
 
     public function path()
     {
-        return self::THEME;
+        $this->setting['path'];
+        //return self::THEME;
     }
 
 

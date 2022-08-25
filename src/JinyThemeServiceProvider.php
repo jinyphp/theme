@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Compilers\BladeCompiler;
 use Livewire\Livewire;
+use Illuminate\Support\Facades\View;
 
 class JinyThemeServiceProvider extends ServiceProvider
 {
@@ -19,12 +20,32 @@ class JinyThemeServiceProvider extends ServiceProvider
         // 데이터베이스
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
+        // 설정파일 복사
+        $this->publishes([
+            __DIR__.'/../config/theme/setting.php' => config_path('jiny/theme/setting.php'),
+        ]);
+
+        $setting = config("jiny.theme.setting");
+
+        // 테마 view 경로 추가
+        $paths = config('view.paths');
+        $paths []= base_path($setting['path']);
+        config(['view.paths' => $paths]);
+
+
+        /*
+        $themePath = base_path()."/".'themes';
+        if(!is_dir($themePath)) {
+            mkdir($themePath);
+        }
+        */
+
+
         ## 테마를 선택하고 app과 컨덴츠를 결합합니다.
         Blade::component(\Jiny\Theme\View\Components\Theme\Theme::class, "theme");
 
         ## css, javascript등 페이지의 골격 뼈대를 읽어 옵니다.
         Blade::component(\Jiny\Theme\View\Components\Theme\App::class, "theme-app");
-
 
         ## app에 테마의 레이아웃을 결합합니다.
         Blade::component(\Jiny\Theme\View\Components\ThemeLayout::class, "theme-layout");
@@ -32,66 +53,54 @@ class JinyThemeServiceProvider extends ServiceProvider
         Blade::component(\Jiny\Theme\View\Components\ThemeSidebar::class, "theme-sidebar");
         Blade::component(\Jiny\Theme\View\Components\ThemeMain::class, "theme-main");
 
-        // 테마 컴포넌트 등록
-        foreach($this->themeDir() as $theme) {
-            $this->themeComponents($theme);
+        Blade::component(\Jiny\Theme\View\Components\ThemeHeader::class, "theme-header");
+        Blade::component(\Jiny\Theme\View\Components\ThemeFooter::class, "theme-footer");
+
+
+        // Active Components 등록
+        foreach($setting['active'] as $item) {
+            $path = base_path($setting['path'].DIRECTORY_SEPARATOR.$item);
+            if(is_dir($path)) {
+                $componentNames = $this->scanComponents($path, ['app','layout','sidebar','main','footer','header']);
+            }
         }
+
 
         $this->Directive();
     }
 
-    private function themeDir()
+
+    private function scanComponents($path, $except=[])
     {
-        $path = resource_path('views/theme');
-        if (file_exists($path) && is_dir($path)) {
-            $dir = scandir($path);
-            $themes = [];
-            foreach($dir as $item) {
-                if($item == '.' || $item == '..') continue;
-                if($item[0] == '.') continue;
-                //dump($item);
-                if(is_dir($path.DIRECTORY_SEPARATOR.$item)) {
-                    //$vendor = $item;
-                    $dir2 = scandir($path.DIRECTORY_SEPARATOR.$item);
-                    foreach($dir2 as $item2) {
-                        if($item2 == '.' || $item2 == '..') continue;
-                        if($item2[0] == '.') continue;
-                        if(is_dir($path.DIRECTORY_SEPARATOR.$item.DIRECTORY_SEPARATOR.$item2)) {
-                            $themes []= $item."/".$item2;
-                        }
-                    }
+        foreach($except as $i => $name) {
+            $except[$i] .= ".blade.php";
+        }
+
+        $dir = scandir($path);
+        $names = [];
+        foreach($dir as $file) {
+            if($file == '.' || $file == '..') continue;
+            if($file[0] == '.') continue;
+            if(in_array($file,$except)) continue;
+
+            if(is_dir($path.DIRECTORY_SEPARATOR.$file)) {
+                $sub = $this->scanComponents($path.DIRECTORY_SEPARATOR.$file);
+                foreach($sub as $name) {
+                    $component = str_replace(".blade.php","",$file.".".$name);
+                    Blade::component(\Jiny\Theme\View\Components\ThemeComponent::class, "theme-".$component);
+                    $names []= $component;
                 }
+            } else {
+                $component = str_replace(".blade.php","",$file);
+                Blade::component(\Jiny\Theme\View\Components\ThemeComponent::class, "theme-".$component);
+                $names []= $component;
             }
-            return $themes;
         }
 
-        return [];
+        return $names;
     }
 
-    private function themeComponents($theme)
-    {
-        $path = resource_path('views/theme');
-        $path = $path.DIRECTORY_SEPARATOR.$theme.DIRECTORY_SEPARATOR."components";
-        $path = str_replace('/',DIRECTORY_SEPARATOR,$path);
-        //dump($path);
-        if(is_dir($path)) {
-            $dir = scandir($path);
 
-            //$this->callAfterResolving(BladeCompiler::class, function ($dir, $theme) {
-                foreach($dir as $item) {
-                    if($item == '.' || $item == '..') continue;
-                    $this->registerComponent($item, $theme);
-                }
-            //});
-        }
-    }
-
-    private function registerComponent(string $item, string $theme)
-    {
-        $name = str_replace('.blade.php', '', $item);
-        $component = "theme.".str_replace('/','.',$theme).".components.".$name;
-        Blade::component($component, 'theme-'.$name);
-    }
 
 
     public function register()
