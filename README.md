@@ -8,6 +8,15 @@
 composer require jiny/theme
 ```
 
+## 설정
+환경설정을 패키지에서 복사하여 설치를 합니다. 다음과 같이 콘솔창에서 입력하세요.
+
+```
+php artisan vendor:publish --provider="Jiny\Theme\JinyThemeServiceProvider"
+```
+
+
+
 ## 테마 만들기
 먼저 라라벨 뷰 리소스를 관리하는 `resources/view`폴더에 새로운 `theme` 폴더를 생성합니다.
 `theme`페키지는 `vendor/name` 형태로 복수의 테마를 관리 합니다. 

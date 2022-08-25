@@ -34,12 +34,15 @@ class JinyThemeServiceProvider extends ServiceProvider
             config(['view.paths' => $paths]);
 
             // Active Components 등록
-            foreach($setting['active'] as $item) {
-                $path = base_path($setting['path'].DIRECTORY_SEPARATOR.$item);
-                if(is_dir($path)) {
-                    $componentNames = $this->scanComponents($path, ['app','layout','sidebar','main','footer','header']);
+            if(isset($setting['active'])) {
+                foreach($setting['active'] as $item) {
+                    $path = base_path($setting['path'].DIRECTORY_SEPARATOR.$item);
+                    if(is_dir($path)) {
+                        $componentNames = $this->scanComponents($path, ['app','layout','sidebar','main','footer','header']);
+                    }
                 }
             }
+
         }
 
 

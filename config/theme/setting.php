@@ -1,5 +1,8 @@
 <?php
 
 return [
-    'path'=>"theme"
+    "path"=>"theme",
+    "active"=>[
+
+    ]
 ];
