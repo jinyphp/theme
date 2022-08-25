@@ -25,20 +25,22 @@ class JinyThemeServiceProvider extends ServiceProvider
             __DIR__.'/../config/theme/setting.php' => config_path('jiny/theme/setting.php'),
         ]);
 
+
         $setting = config("jiny.theme.setting");
+        if($setting) {
+            // 테마 view 경로 추가
+            $paths = config('view.paths');
+            $paths []= base_path($setting['path']);
+            config(['view.paths' => $paths]);
 
-        // 테마 view 경로 추가
-        $paths = config('view.paths');
-        $paths []= base_path($setting['path']);
-        config(['view.paths' => $paths]);
-
-
-        /*
-        $themePath = base_path()."/".'themes';
-        if(!is_dir($themePath)) {
-            mkdir($themePath);
+            // Active Components 등록
+            foreach($setting['active'] as $item) {
+                $path = base_path($setting['path'].DIRECTORY_SEPARATOR.$item);
+                if(is_dir($path)) {
+                    $componentNames = $this->scanComponents($path, ['app','layout','sidebar','main','footer','header']);
+                }
+            }
         }
-        */
 
 
         ## 테마를 선택하고 app과 컨덴츠를 결합합니다.
@@ -55,15 +57,6 @@ class JinyThemeServiceProvider extends ServiceProvider
 
         Blade::component(\Jiny\Theme\View\Components\ThemeHeader::class, "theme-header");
         Blade::component(\Jiny\Theme\View\Components\ThemeFooter::class, "theme-footer");
-
-
-        // Active Components 등록
-        foreach($setting['active'] as $item) {
-            $path = base_path($setting['path'].DIRECTORY_SEPARATOR.$item);
-            if(is_dir($path)) {
-                $componentNames = $this->scanComponents($path, ['app','layout','sidebar','main','footer','header']);
-            }
-        }
 
 
         $this->Directive();
