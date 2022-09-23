@@ -45,17 +45,22 @@ class Theme
     public function isTheme()
     {
         if ($this->theme) {
-            // 경로 추출
-            $path = base_path().DIRECTORY_SEPARATOR.$this->setting['path'];
-            if(!is_dir($path)) {
-                mkdir($path);
+            // 테마 설정값이 있는지 확인
+            if(isset($this->setting['path'])) {
+
+                // 경로 추출
+                $path = base_path().DIRECTORY_SEPARATOR.$this->setting['path'];
+                if(!is_dir($path)) {
+                    mkdir($path);
+                }
+
+                // 폴더 검사
+                $themePath = $path.DIRECTORY_SEPARATOR.str_replace('.', DIRECTORY_SEPARATOR, $this->theme);
+                if(is_dir($themePath)) {
+                    return $this->theme;
+                }
             }
 
-            // 폴더 검사
-            $themePath = $path.DIRECTORY_SEPARATOR.str_replace('.', DIRECTORY_SEPARATOR, $this->theme);
-            if(is_dir($themePath)) {
-                return $this->theme;
-            }
         }
 
         // 테마 폴더가 존재하지 않음
