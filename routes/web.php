@@ -9,7 +9,7 @@ use Jiny\Theme\Http\Controllers\AdminThemeCopy;
 // 관리자 URL
 Route::middleware(['web','auth:sanctum', 'verified'])
 ->name('admin.theme.')
-->prefix('/admin/theme')->group(function () {
+->prefix('/_admin/theme')->group(function () {
 
     Route::resource('list', \Jiny\Theme\Http\Controllers\Admin\ThemeListController::class);
     Route::resource('store', \Jiny\Theme\Http\Controllers\Admin\ThemeStoreController::class);
