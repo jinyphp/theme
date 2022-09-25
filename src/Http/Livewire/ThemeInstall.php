@@ -95,6 +95,22 @@ class ThemeInstall extends Component
     {
         $this->code = $code;
 
+        $row = DB::table("site_theme")->where('code',$code)->first();
+        if($row) {
+            $this->theme = []; //초기화
+
+            foreach($row as $key => $value) {
+                $this->theme[$key] = $value;
+            }
+
+            //$this->theme['installed'] = $row->installed;
+        }
+
+        $this->popupStoreOpen();
+
+        return;
+
+
         // 테마 정보 데이터 읽기
         if($this->dataType == "table") {
             $row = DB::table("site_theme_store")->where('code',$code)->first();

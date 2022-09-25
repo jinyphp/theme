@@ -7,11 +7,14 @@
     <x-dialog-modal wire:model="popupstore" maxWidth="2xl">
 
         <x-slot name="content">
-            <img class="card-img-top" src="/images/{{$theme['image']}}" >
+            @if(isset($theme['image']) && $theme['image'])
+            <img class="card-img-top" src="/images/{{$theme['image']}}" />
+            @endif
 
             <div class="card-title h5">
                 {{ $theme['title'] }}
             </div>
+
             <p class="card-text">{{ $theme['subtitle'] }}</p>
 
             <table class="table table-sm">
@@ -51,7 +54,9 @@
                     <x-button danger wire:click="remove">제거</x-button>
                 @else
                     <x-button secondary wire:click="popupStoreClose">닫기</x-button>
+                    @if($theme['url'])
                     <x-button primary wire:click="download">설치</x-button>
+                    @endif
                 @endif
 
                 </div>
