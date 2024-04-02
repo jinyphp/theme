@@ -9,42 +9,43 @@ class Theme extends Component
 {
     public $theme_name;
 
-    public function __construct($theme=null)
+    public function __construct($theme=null, $name=null)
     {
         // 속성값으로 전달받은 테마명을 설정합니다.
         if($theme) {
-            xTheme()->setTheme($theme);
             $this->theme_name = $theme;
         }
+
+        if($name) {
+            $this->theme_name = $name;
+        }
+
+        if($this->theme_name) {
+            xTheme()->setTheme($this->theme_name);
+        }
+
     }
 
     public function render()
     {
-        $Theme = xTheme(); // 테마 싱글턴 인스턴스
-        if($Theme->isTheme()) {
+        $theme_name = xTheme()->getName();
+        $theme_name = trim($theme_name,'"');
+        if ($theme_name) {
 
-            // App.blade.php 파일존재 확인
-            if ($view = $Theme->isThemeApp()) {
-                if (View::exists($view)) {
-                    return view($view); // 테마 리소스가 있는 경우
-                }
+            $viewFile = $theme_name.".app";
+
+            // 테마 리소스가 있는 경우
+            if (View::exists("theme::".$viewFile)) {
+                return view("theme::".$viewFile);
             }
 
-            //dd($view);
-            return $Theme->getName()." 테마 폴더안에 app.blade.php 파일이 없습니다.";
+            return view("jinytheme::errors.alert",[
+                'message'=>$viewFile." 테마에 app.blade.php 파일을 찾을 수 없습니다."
+            ]);
         }
 
-
-        return view("jinytheme::error.message.alert",[
-            'message'=>$Theme->getName()." 테마가 설치되어 있지 않습니다. 콘솔 또는 Admin에서 테마를 설치해 주세요."
+        return view("jinytheme::errors.alert",[
+            'message'=>"테마명이 선택되어 있지 않습니다."
         ]);
-        //return $Theme->getName()." 테마가 설치되어 있지 않습니다. 콘솔 또는 Admin에서 테마를 설치해 주세요.";
-
-
-        // else 처리
-        /*
-        $view = 'jinytheme::components.theme.theme';
-        return view($view);
-        */
     }
 }

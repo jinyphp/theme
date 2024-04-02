@@ -1,6 +1,9 @@
 {
     "name": "jiny/theme",
-    "description": "jinyPHP Theme Manager for Laravel",
+    "description": "Theme for jinyPHP",
+    "keywords": [
+        "Laravel", "jinyPHP", "framwork", "theme"
+    ],
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -11,8 +14,7 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "php": "^7.3|^8.0",
-        "livewire/livewire": "^2.7",
+        "php": "^8.1",
         "guzzlehttp/guzzle": "^7.4"
 
     },

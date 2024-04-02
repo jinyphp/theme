@@ -1,4 +1,3 @@
-{{-- 목록을 출력하기 위한 템플릿 --}}
 <x-theme theme="admin.sidebar">
     <x-theme-layout>
         <!-- Module Title Bar -->
@@ -38,14 +37,16 @@
         {{-- Json 내용을 기반으로 목록 출력 --}}
         @livewire('JsonTable', ['actions'=>$actions])
 
-        @livewire('Popup-LiveForm', ['actions'=>$actions])
+        @livewire('WirePopupForm', ['actions'=>$actions])
 
         @livewire('Popup-LiveManual')
 
         @livewire('ThemeInstall')
 
-        {{-- Admin Rule Setting --}}
-        @include('jinytable::setActionRule')
+        {{-- SuperAdmin Actions Setting --}}
+        @if(Module::has('Actions'))
+            @livewire('setActionRule', ['actions'=>$actions])
+        @endif
 
     </x-theme-layout>
 </x-theme>

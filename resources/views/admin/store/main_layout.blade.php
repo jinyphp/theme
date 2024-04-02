@@ -8,8 +8,8 @@
 
     <!-- 데이터 목록 -->
     <x-row>
-        @if (isset($actions['view_list']))
-            @includeIf($actions['view_list'])
+        @if (isset($actions['view']['list']))
+            @includeIf($actions['view']['list'])
         @endif
     </x-row>
 

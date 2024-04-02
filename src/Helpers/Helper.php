@@ -24,6 +24,13 @@ function setTheme($name=null) {
     return $obj;
 }
 
+if(!function_exists("getThemeName")) {
+    function getThemeName() {
+        return xTheme()->getName();
+    }
+}
+
+
 function themeCSS($path, $name=null) {
     if($name) {
         $theme = $name;

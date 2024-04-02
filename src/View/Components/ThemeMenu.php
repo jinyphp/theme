@@ -5,7 +5,7 @@ namespace Jiny\Theme\View\Components;
 use Illuminate\View\Component;
 use Illuminate\Support\Facades\View;
 
-class ThemeHeader extends Component
+class ThemeMenu extends Component
 {
     public $data;
 
@@ -20,7 +20,7 @@ class ThemeHeader extends Component
         $theme_name = trim($theme_name,'"');
         if ($theme_name) {
 
-            $viewFile = $theme_name.".header";
+            $viewFile = $theme_name.".menu";
 
             // 테마 리소스가 있는 경우
             if (View::exists("theme::".$viewFile)) {
@@ -28,7 +28,7 @@ class ThemeHeader extends Component
             }
 
             return view("jinytheme::errors.alert",[
-                'message'=>$theme_name." 테마에 header.blade.php 파일을 찾을 수 없습니다."
+                'message'=>$theme_name." 테마에 menu.blade.php 파일을 찾을 수 없습니다."
             ]);
 
         }

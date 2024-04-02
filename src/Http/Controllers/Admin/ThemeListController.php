@@ -23,9 +23,9 @@ class ThemeListController extends ResourceController
         $this->actions['table'] = "site_theme"; // 테이블 정보
         $this->actions['paging'] = 10; // 페이지 기본값
 
-        $this->actions['view_main'] = "jinytheme::admin.list.main";
-        $this->actions['view_list'] = "jinytheme::admin.list.list";
-        $this->actions['view_form'] = "jinytheme::admin.list.form";
+        $this->actions['view']['main'] = "jinytheme::admin.list.main";
+        $this->actions['view']['list'] = "jinytheme::admin.list.list";
+        $this->actions['view']['form'] = "jinytheme::admin.list.form";
 
         // https://github.com/jinyphp/theme_docs_bootstrap/archive/refs/heads/master.zip
         // https://github.com/jinyphp/theme_admin_sidebar/archive/refs/heads/master.zip

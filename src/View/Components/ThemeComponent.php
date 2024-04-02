@@ -16,6 +16,8 @@ class ThemeComponent extends Component
         } else {
             $this->theme_name = xTheme()->getName();
         }
+
+
     }
 
     public function render()

@@ -23,10 +23,10 @@ class ThemeStoreController extends ResourceController
         //$this->actions['table'] = "site_theme_store"; // 테이블 정보
         //$this->actions['paging'] = 10; // 페이지 기본값
 
-        ///$this->actions['view_main'] = "jinytheme::admin.store.main";
-        ///$this->actions['view_main_layout'] = "jinytheme::admin.store.main_layout";
-        ///$this->actions['view_list'] = "jinytheme::admin.store.tile";
-        ///$this->actions['view_form'] = "jinytheme::admin.store.form";
+        ///$this->actions['view']['main'] = "jinytheme::admin.store.main";
+        ///$this->actions['view']['main_layout'] = "jinytheme::admin.store.main_layout";
+        ///$this->actions['view']['list'] = "jinytheme::admin.store.tile";
+        ///$this->actions['view']['form'] = "jinytheme::admin.store.form";
 
         // https://github.com/jinyphp/theme_docs_bootstrap/archive/refs/heads/master.zip
         // https://github.com/jinyphp/theme_admin_sidebar/archive/refs/heads/master.zip

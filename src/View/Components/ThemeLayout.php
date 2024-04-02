@@ -3,34 +3,38 @@ namespace Jiny\Theme\View\Components;
 
 use Illuminate\View\Component;
 use Illuminate\Support\Facades\View;
+//use Illuminate\View\View;
 
 class ThemeLayout extends Component
 {
-    public $theme_name;
+    public $data;
 
-    public function __construct($theme=null)
+    public function __construct($data=null)
     {
-        if($theme) {
-            xTheme()->setTheme($theme);
-            $this->theme_name = $theme;
-        } else {
-            $this->theme_name = xTheme()->getName();
-        }
+        $this->data = $data;
     }
 
     public function render()
     {
-        if ($this->theme_name) {
-            $viewFile = $this->theme_name.".layout";
-            if (View::exists($viewFile)) { // 테마 리소스가 있는 경우
-                return view($viewFile);
+        $theme_name = xTheme()->getName();
+        $theme_name = trim($theme_name,'"');
+        if ($theme_name) {
+
+            $viewFile = $theme_name.".layout";
+
+            // 테마 리소스가 있는 경우
+            if (View::exists("theme::".$viewFile)) {
+                return view("theme::".$viewFile);
             }
+
+            return view("jinytheme::errors.alert",[
+                'message'=>$theme_name." 테마에 layout.blade.php 파일을 찾을 수 없습니다."
+            ]);
+
         }
 
-        return $this->theme_name." 테마 폴더안에 layout.blade.php 파일이 없습니다.";
-
-        //$layout = 'jinytheme::components.theme.layout';
-        //dd($layout);
-        //return view($layout);
+        return view("jinytheme::errors.alert",[
+            'message'=>"테마이름이 지정되어 있지 않습니다."
+        ]);
     }
 }
