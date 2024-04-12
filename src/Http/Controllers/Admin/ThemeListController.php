@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 
-use Jiny\Table\Http\Controllers\ResourceController;
-class ThemeListController extends ResourceController
+use Jiny\Admin\Http\Controllers\AdminController;
+class ThemeListController extends AdminController
 {
     public function __construct()
     {

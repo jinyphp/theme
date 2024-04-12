@@ -6,6 +6,24 @@ use Illuminate\Http\Request;
 use Jiny\Theme\Http\Controllers\AdminTheme;
 use Jiny\Theme\Http\Controllers\AdminThemeCopy;
 
+// 지니어드민 패키지가 설치가 되어 있는 경우에만 실행
+if(function_exists("isAdminPackage")) {
+
+    // admin prefix 모듈 검사
+    if(function_exists('admin_prefix')) {
+        $prefix = admin_prefix();
+    } else {
+        $prefix = "admin";
+    }
+
+    Route::middleware(['web','auth:sanctum', 'verified'])
+    ->name('admin.')
+    ->prefix($prefix."/theme")->group(function () {
+        Route::get('setting', [\Jiny\Theme\Http\Controllers\SettingController::class,"index"]);
+    });
+
+}
+
 // 관리자 URL
 Route::middleware(['web','auth:sanctum', 'verified'])
 ->name('admin.theme.')
