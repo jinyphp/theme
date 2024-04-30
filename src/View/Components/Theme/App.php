@@ -11,6 +11,7 @@ class App extends Component
 
     public function __construct($theme=null)
     {
+
         if($theme) {
             xTheme()->setTheme($theme);
         }

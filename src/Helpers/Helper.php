@@ -19,7 +19,9 @@ if (!function_exists('xTheme')) {
 }
 
 function setTheme($name=null) {
+
     $obj = \Jiny\Theme\Theme::instance();
+
     if($name) $obj->setTheme($name);
     return $obj;
 }

@@ -62,6 +62,11 @@ class JinyThemeServiceProvider extends ServiceProvider
         */
         Blade::component(\Jiny\Theme\View\Components\Theme\Theme::class, "theme");
         Blade::component(\Jiny\Theme\View\Components\Theme\App::class, "theme-app");
+
+        // 프레임워크 선택 컴포넌트
+        Blade::component(\Jiny\Theme\View\Components\ThemeBootstrap::class, "theme-bootstrap");
+
+
         Blade::component(\Jiny\Theme\View\Components\ThemeLayout::class, "theme-layout");
         Blade::component(\Jiny\Theme\View\Components\ThemeMain::class, "theme-main");
         Blade::component(\Jiny\Theme\View\Components\ThemeHeader::class, "theme-header");
@@ -119,6 +124,21 @@ class JinyThemeServiceProvider extends ServiceProvider
             xTheme()->setTheme($expression);
         });
 
+        Blade::directive('themeAssets', function ($expression) {
+            $args = str_getcsv($expression);
+            $themeFile = trim($args[0], '\'"');
+            $themeVariables = isset($args[1]) ? trim($args[1], '\'"') : '';
+
+
+            $base = base_path('theme/');
+            $themePath = str_replace(['/','\\'], DIRECTORY_SEPARATOR, $themeFile);
+            $themeContent = File::get($base.$themePath);
+
+
+            // 변수를 템플릿에 전달하고 컴파일된 결과를 반환합니다.
+            return Blade::compileString($themeContent, $themeVariables);
+        });
+
     }
 
 
@@ -160,6 +180,8 @@ class JinyThemeServiceProvider extends ServiceProvider
         /* 라이브와이어 컴포넌트 등록 */
         $this->app->afterResolving(BladeCompiler::class, function () {
             Livewire::component('ThemeInstall', \Jiny\Theme\Http\Livewire\ThemeInstall::class);
+
+            Livewire::component('theme-list', \Jiny\Theme\Http\Livewire\ThemeList::class);
         });
     }
 

@@ -30,6 +30,7 @@ class Theme extends Component
     {
         $theme_name = xTheme()->getName();
         $theme_name = trim($theme_name,'"');
+
         if ($theme_name) {
 
             $viewFile = $theme_name.".app";
