@@ -16,11 +16,14 @@ class ThemeLayout extends Component
 
     public function render()
     {
-        $theme_name = xTheme()->getName();
-        $theme_name = trim($theme_name,'"');
-        if ($theme_name) {
+        //$theme_name = xTheme()->getName();
+        //$theme_name = trim($theme_name,'"');
+        $path = base_path('theme');
+        $theme = file_get_contents($path.DIRECTORY_SEPARATOR."default.txt");
 
-            $viewFile = $theme_name.".layout";
+        if($theme) {
+
+            $viewFile = $theme.".layout";
 
             // 테마 리소스가 있는 경우
             if (View::exists("theme::".$viewFile)) {
@@ -28,7 +31,7 @@ class ThemeLayout extends Component
             }
 
             return view("jinytheme::errors.alert",[
-                'message'=>$theme_name." 테마에 layout.blade.php 파일을 찾을 수 없습니다."
+                'message'=>$theme." 테마에 layout.blade.php 파일을 찾을 수 없습니다."
             ]);
 
         }

@@ -32,7 +32,7 @@ php artisan vendor:publish --provider="Jiny\Theme\JinyThemeServiceProvider"
 블레이드 문법에서 `<x-theme>`테그를 이용하여 사이트의 외형을 일관적으로 유지 관리 가능합니다.
 
 ```html
-<x-theme theme="admin.sidebar">
+<x-theme name="admin.sidebar">
 내용...
 </x-theme>
 ```

@@ -29,17 +29,29 @@ class Theme
     public function setTheme($theme)
     {
         $this->theme = str_replace('/','.',$theme);
+
+        $path = base_path('theme');
+        file_put_contents($path.DIRECTORY_SEPARATOR."default.txt",$theme);
+
         return $this;
     }
 
     public function getTheme()
     {
-        return $this->theme;
+        $path = base_path('theme');
+        $theme = file_get_contents($path.DIRECTORY_SEPARATOR."default.txt");
+        return $theme;
+
+        //return $this->theme;
     }
 
     public function getName()
     {
-        return $this->theme;
+        $path = base_path('theme');
+        $theme = file_get_contents($path.DIRECTORY_SEPARATOR."default.txt");
+        return $theme;
+
+        //return $this->theme;
     }
 
     public function isTheme()

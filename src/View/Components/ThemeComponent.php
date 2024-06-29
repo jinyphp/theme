@@ -22,6 +22,8 @@ class ThemeComponent extends Component
 
     public function render()
     {
+        //$path = base_path('theme');
+        //$theme = file_get_contents($path.DIRECTORY_SEPARATOR."default.txt");
 
         if ($this->theme_name) {
             $componentName = str_replace("theme-","",$this->componentName);
