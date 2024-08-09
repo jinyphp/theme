@@ -87,6 +87,41 @@ class JinyThemeServiceProvider extends ServiceProvider
 
         // 디렉티브
         Blade::directive('theme', function ($expression) {
+            // Parse the expression to extract the view name and variables
+            $args = str_getcsv($expression, ',', "'");
+            $view = trim($args[0], '\'"');
+            $variables = isset($args[1]) ? trim($args[1]) : '[]';
+
+            $theme = xTheme()->getTheme();
+            $viewPath = "'theme::" . $theme . "." . $view . "'";
+
+
+            /*
+            // Check if the view contains '..' and adjust the path accordingly
+            if (strpos($view, '..') === 0) {
+                // Remove the leading '..' and any subsequent slashes or dots
+                $view = ltrim($view, '.\\/');
+
+                // Adjust the view path to move up one directory level
+                //$viewPath = 'www::_partials.'. $view;
+                $viewPath = "'www::_partials." . $view . "'";
+            } else {
+                // Add the prefix to the view name
+                $slot = www_slot();
+                if ($slot) {
+                    $viewPath = "'www::" . $slot . "._partials." . $view . "'";
+                } else {
+                    $viewPath = "'www::_partials." . $view . "'";
+                }
+            }
+            */
+
+            return "<?php echo \$__env->make({$viewPath}, {$variables}, \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>";
+        });
+
+        // 디렉티브
+        /*
+        Blade::directive('theme', function ($expression) {
             $args = str_getcsv($expression);
             $themeFile = trim($args[0], '\'"');
             $themeVariables = isset($args[1]) ? trim($args[1], '\'"') : '';
@@ -115,6 +150,7 @@ class JinyThemeServiceProvider extends ServiceProvider
             // 변수를 템플릿에 전달하고 컴파일된 결과를 반환합니다.
             return Blade::compileString($themeContent, $themeVariables);
         });
+        */
 
         // 테마설정
         Blade::directive('setTheme', function ($args) {
