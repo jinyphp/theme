@@ -15,22 +15,22 @@ class ThemeHeader extends Component
 
     public function render()
     {
-        //$theme_name = xTheme()->getName();
-        //$theme_name = trim($theme_name,'"');
-        $path = base_path('theme');
-        $theme = file_get_contents($path.DIRECTORY_SEPARATOR."default.txt");
+        $theme = xTheme()->getTheme();
+        if($theme) {
 
-        if ($theme) {
+            if($viewFile = $this->inLayout($theme,"header")) {
+                return view("theme::".$viewFile,[
+                ]);
+            }
 
-            $viewFile = $theme.".header";
+            if($viewFile = $this->inRoot($theme,"header")) {
+                return view("theme::".$viewFile,[
 
-            // 테마 리소스가 있는 경우
-            if (View::exists("theme::".$viewFile)) {
-                return view("theme::".$viewFile);
+                ]);
             }
 
             return view("jinytheme::errors.alert",[
-                'message'=>$theme." 테마에 header.blade.php 파일을 찾을 수 없습니다."
+                'message'=>$theme." 테마에 layout.blade.php 파일을 찾을 수 없습니다."
             ]);
 
         }
@@ -38,6 +38,27 @@ class ThemeHeader extends Component
         return view("jinytheme::errors.alert",[
             'message'=>"테마이름이 지정되어 있지 않습니다."
         ]);
+    }
+
+    // _layouts 안에 .blade.php 검사
+    private function inLayout($theme, $name)
+    {
+        $viewFile = $theme."._layouts.".$name;
+        if (View::exists("theme::".$viewFile)) {
+            return $viewFile;
+        }
+
+        return false;
+    }
+
+    private function inRoot($theme, $name)
+    {
+        $viewFile = $theme.".".$name;
+        if (View::exists("theme::".$viewFile)) {
+            return $viewFile;
+        }
+
+        return false;
     }
 
 }
