@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\File;
 class JinyThemeServiceProvider extends ServiceProvider
 {
     private $package = "jinytheme";
+    private $components = []; //중복생성 방지를 위한 임시체크
+    private $theme;
+
     public function boot()
     {
         // 모듈: 라우트 설정
@@ -32,7 +35,6 @@ class JinyThemeServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../config/theme/setting.php' => config_path('jiny/theme/setting.php'),
         ]);
-
 
         $setting = config("jiny.theme.setting");
         if($setting) {
@@ -63,6 +65,13 @@ class JinyThemeServiceProvider extends ServiceProvider
         Blade::component(\Jiny\Theme\View\Components\Theme\Theme::class, "theme");
         Blade::component(\Jiny\Theme\View\Components\Theme\App::class, "theme-app");
 
+        $this->components = ['theme', 'theme-app']; // 제외할 이름
+        $this->dynamicComponents();
+        // dd($this->components);
+
+        /*
+
+
         // 프레임워크 선택 컴포넌트
         Blade::component(\Jiny\Theme\View\Components\ThemeBootstrap::class, "theme-bootstrap");
 
@@ -75,6 +84,7 @@ class JinyThemeServiceProvider extends ServiceProvider
         Blade::component(\Jiny\Theme\View\Components\ThemeMenu::class, "theme-menu");
         Blade::component(\Jiny\Theme\View\Components\ThemeTopMenu::class, "theme-topmenu");
         Blade::component(\Jiny\Theme\View\Components\ThemeTopBar::class, "theme-topbar");
+        */
 
 
         // artisan 명령등록
@@ -95,62 +105,10 @@ class JinyThemeServiceProvider extends ServiceProvider
             $theme = xTheme()->getTheme();
             $viewPath = "'theme::" . $theme . "." . $view . "'";
 
-
-            /*
-            // Check if the view contains '..' and adjust the path accordingly
-            if (strpos($view, '..') === 0) {
-                // Remove the leading '..' and any subsequent slashes or dots
-                $view = ltrim($view, '.\\/');
-
-                // Adjust the view path to move up one directory level
-                //$viewPath = 'www::_partials.'. $view;
-                $viewPath = "'www::_partials." . $view . "'";
-            } else {
-                // Add the prefix to the view name
-                $slot = www_slot();
-                if ($slot) {
-                    $viewPath = "'www::" . $slot . "._partials." . $view . "'";
-                } else {
-                    $viewPath = "'www::_partials." . $view . "'";
-                }
-            }
-            */
-
             return "<?php echo \$__env->make({$viewPath}, {$variables}, \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>";
         });
 
-        // 디렉티브
-        /*
-        Blade::directive('theme', function ($expression) {
-            $args = str_getcsv($expression);
-            $themeFile = trim($args[0], '\'"');
-            $themeVariables = isset($args[1]) ? trim($args[1], '\'"') : '';
 
-            $themeName = xTheme()->getName();
-            if($themeName) {
-                // 미리 @setThem를 통하여 테마가 선언되어 있어야 함.
-                $base = base_path('theme/');
-                $path = str_replace('.', DIRECTORY_SEPARATOR, trim($themeName,'"'));
-                $themePath = $path . DIRECTORY_SEPARATOR . $themeFile;
-                $themePath = str_replace(['/','\\'], DIRECTORY_SEPARATOR, $themePath);
-
-
-                if(file_exists($base.$themePath.".blade.php")) {
-                    $themeContent = File::get($base.$themePath.".blade.php");
-                } else
-                if(file_exists($base.$themePath.".html")) {
-                    $themeContent = File::get($base.$themePath.".html");
-                } else {
-                    $themeContent = "can't read ".$themePath;
-                }
-            } else {
-                $themeContent = "미리 테마가 선택되어 있어야 합니다.";
-            }
-
-            // 변수를 템플릿에 전달하고 컴파일된 결과를 반환합니다.
-            return Blade::compileString($themeContent, $themeVariables);
-        });
-        */
 
         // 테마설정
         Blade::directive('setTheme', function ($args) {
@@ -175,38 +133,130 @@ class JinyThemeServiceProvider extends ServiceProvider
             return Blade::compileString($themeContent, $themeVariables);
         });
 
+
     }
 
-
-    private function scanComponents($path, $except=[])
+    /**
+     * 동적 컴포넌트
+     * _components 안에 있는 파일들을 동적으로 컴포넌트화 합니다.
+     */
+    private function dynamicComponents()
     {
-        foreach($except as $i => $name) {
-            $except[$i] .= ".blade.php";
-        }
+        // 현재 테마 경로 읽기
+        $base = base_path('theme');
 
+        $theme = xTheme()->getTheme();
+        $this->theme = xTheme()->getTheme();
+
+        $theme = str_replace('.', DIRECTORY_SEPARATOR, $this->theme);
+        $path = $base;
+        $path .= DIRECTORY_SEPARATOR.$theme;
+
+        // 1. 컴포넌트 폴더 동적로드
+        if(!is_dir($path.DIRECTORY_SEPARATOR."_components")) {
+            mkdir($path.DIRECTORY_SEPARATOR."_components",0777,true);
+        }
+        $this->makeRescueComponents($path.DIRECTORY_SEPARATOR."_components",["theme_"]);
+
+        // 2. 레이아웃 폴더 동적로드
+        if(!is_dir($path.DIRECTORY_SEPARATOR."_layouts")) {
+            mkdir($path.DIRECTORY_SEPARATOR."_layouts",0777,true);
+        }
+        $this->makeRescueComponents($path.DIRECTORY_SEPARATOR."_layouts",["theme-"]);
+
+
+    }
+
+    private function makeRescueComponents($path, $prefix=null)
+    {
+        // $prefix = trim($prefix, '-'); // 앞에 -로 시작하는 것 제외
+
+        // 테마에서 파일을 읽기
         $dir = scandir($path);
-        $names = [];
+        //dd($dir);
         foreach($dir as $file) {
             if($file == '.' || $file == '..') continue;
-            if($file[0] == '.') continue;
-            if(in_array($file,$except)) continue;
+            if($file[0] == '.') continue; // 숨김파일
 
             if(is_dir($path.DIRECTORY_SEPARATOR.$file)) {
-                $sub = $this->scanComponents($path.DIRECTORY_SEPARATOR.$file);
-                foreach($sub as $name) {
-                    $component = str_replace(".blade.php","",$file.".".$name);
-                    Blade::component(\Jiny\Theme\View\Components\ThemeComponent::class, "theme-".$component);
-                    $names []= $component;
-                }
-            } else {
-                $component = str_replace(".blade.php","",$file);
-                Blade::component(\Jiny\Theme\View\Components\ThemeComponent::class, "theme-".$component);
-                $names []= $component;
+                // dd($prefix);
+                $temp = $prefix;
+                $temp []= $file;
+                $this->makeRescueComponents($path.DIRECTORY_SEPARATOR.$file, $temp);
+                continue;
             }
-        }
 
-        return $names;
+            // blade 파일인지 검사
+            if(substr($file, -10) === '.blade.php') {
+                $name = substr($file, 0, strlen($file)-10);
+
+                $temp = $prefix;
+                $temp []= $name;
+                if(count($temp)>0) {
+                    $comName = $temp[0];
+                    $comName .= implode('-',array_slice($temp,1));
+                    //dump($comName);
+                    //$comName .= "-".$name;
+                } else {
+                    //$comName = "";
+                    $comName = implode('-',array_slice($temp,1));
+                    //$comName .= "-".$name;
+                }
+                //dump($comName);
+
+
+                if(!in_array($comName, $this->components)) {
+                    $this->components []= $comName;
+
+                    $comPath = "theme::".$this->theme."._components.";
+                    if(count($temp)>0) {
+                        $comPath .= implode('.',array_slice($temp,1));
+                    } else {
+
+                    }
+                    //$comPath .= ".".$name;
+                    //dd($comPath);
+                    //dump($comPath);
+                    Blade::component($comPath,$comName);
+                }
+            }
+
+        }
     }
+
+    /**
+     * 테마 components 폴더 안에 있는 파일을
+     * 동적으로 로드 합니다.
+     */
+    // private function scanComponents($path, $except=[])
+    // {
+    //     foreach($except as $i => $name) {
+    //         $except[$i] .= ".blade.php";
+    //     }
+
+    //     $dir = scandir($path);
+    //     $names = [];
+    //     foreach($dir as $file) {
+    //         if($file == '.' || $file == '..') continue;
+    //         if($file[0] == '.') continue;
+    //         if(in_array($file,$except)) continue;
+
+    //         if(is_dir($path.DIRECTORY_SEPARATOR.$file)) {
+    //             $sub = $this->scanComponents($path.DIRECTORY_SEPARATOR.$file);
+    //             foreach($sub as $name) {
+    //                 $component = str_replace(".blade.php","",$file.".".$name);
+    //                 Blade::component(\Jiny\Theme\View\Components\ThemeComponent::class, "theme-".$component);
+    //                 $names []= $component;
+    //             }
+    //         } else {
+    //             $component = str_replace(".blade.php","",$file);
+    //             Blade::component(\Jiny\Theme\View\Components\ThemeComponent::class, "theme-".$component);
+    //             $names []= $component;
+    //         }
+    //     }
+
+    //     return $names;
+    // }
 
 
 
