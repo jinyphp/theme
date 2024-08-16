@@ -39,10 +39,13 @@ class Theme
     public function getTheme()
     {
         $path = base_path('theme');
-        $theme = file_get_contents($path.DIRECTORY_SEPARATOR."default.txt");
-        return $theme;
+        $filename = $path.DIRECTORY_SEPARATOR."default.txt";
+        if(file_exists($filename)) {
+            $theme = file_get_contents($filename);
+            return $theme;
+        }
 
-        //return $this->theme;
+        return false;
     }
 
     public function getName()
