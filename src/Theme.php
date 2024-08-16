@@ -51,9 +51,13 @@ class Theme
     public function getName()
     {
         $path = base_path('theme');
-        $theme = file_get_contents($path.DIRECTORY_SEPARATOR."default.txt");
-        return $theme;
+        $filename = $path.DIRECTORY_SEPARATOR."default.txt";
+        if(file_exists($filename)) {
+            $theme = file_get_contents($path.DIRECTORY_SEPARATOR."default.txt");
+            return $theme;
+        }
 
+        return false;
         //return $this->theme;
     }
 
