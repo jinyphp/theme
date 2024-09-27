@@ -1,0 +1,18 @@
+{
+    "route": {
+        "uri": "admin\/theme",
+        "name": "admin"
+    },
+    "routename": "admin",
+    "paging": "10",
+    "create": {
+        "enable": true,
+        "title": "추가"
+    },
+    "controller": "Jiny\\Theme\\Http\\Controllers\\Admin\\AdminThemeDashboard",
+    "view": {
+        "layout": "jinytheme::admin.dashboard.dash"
+    },
+    "title": "Theme Dashboard",
+    "subtitle": "테마를 관리합니다."
+}

@@ -4,23 +4,25 @@ namespace Jiny\Theme\View\Components;
 use Illuminate\View\Component;
 use Illuminate\Support\Facades\View;
 
-class ThemeLayout extends Component
+class ThemeView extends Component
 {
     public $name;
     public $data;
     private $layout_path = "_layouts";
 
-    public function __construct($name=null,$data=null)
+    public function __construct($name=null, $data=null)
     {
         if($name) {
             $this->name = $name;
         } else {
             // Action 설정값 읽기
-            $val = Action()->get('layouts.layout');
+            $val = Action()->get('layouts.content');
+            //dump(Action());
+            //dd($val);
             if($val) {
                 $this->name = $val;
             } else {
-                $this->name = "layout"; // 기본값
+                $this->name = "content"; // 기본값
             }
         }
 
@@ -34,7 +36,7 @@ class ThemeLayout extends Component
             return $result;
         }
 
-        $msg = $this->name."의 layout 디자인 리소스를 읽어 올 수 없습니다.";
+        $msg = $this->name."의 content 디자인 리소스를 읽어 올 수 없습니다.";
         return $this->errorView($msg);
 
     }

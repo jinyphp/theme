@@ -24,6 +24,12 @@ class WireTableJson extends Component
     public $selected;
 
     public $popupForm = false;
+    public $popupWindowWidth = "4xl";
+    public $message;
+
+    public $popupDelete = false;
+    public $confirm = false;
+
     public $viewFile;
 
     public function mount()
@@ -39,10 +45,10 @@ class WireTableJson extends Component
     {
         $filePath = base_path($this->filename);
         if(file_exists($filePath)) {
-            $json = file_get_contents($filePath);
-            $this->rows = json_decode($json, true);
+            $this->rows = json_file_decode($filePath);
+            // $json = file_get_contents($filePath);
+            // $this->rows = json_decode($json, true);
         }
-
         return $this;
     }
 
@@ -90,6 +96,8 @@ class WireTableJson extends Component
 
     public function edit($id)
     {
+        $this->actions['id'] = $id;
+
         $this->popupForm = true;
         $this->edit_id = $id;
 
@@ -120,10 +128,24 @@ class WireTableJson extends Component
 
     public function delete($id=null)
     {
+        $this->popupDelete = true;
+    }
+
+    public function deleteCancel()
+    {
+        $this->popupDelete = false;
+    }
+
+    public function deleteConfirm()
+    {
+        $this->popupDelete = false;
+
         $this->popupForm = false;
 
         $id = $this->edit_id;
         unset($this->rows[$id]);
+
+        unset($this->actions['id']);
 
         // 수정한 데이터 저장
         $this->saveRowsToJson();
@@ -164,7 +186,7 @@ class WireTableJson extends Component
         $this->saveRowsToJson();
     }
 
-    private function saveRowsToJson()
+    protected function saveRowsToJson()
     {
         $filePath = base_path($this->filename);
         $json = json_encode($this->rows, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);

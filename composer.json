@@ -15,7 +15,7 @@
     "minimum-stability": "dev",
     "require": {
         "php": "^8.2",
-        "jiny/ui": "^0.4.0",
+        "jiny/ui": "^0.5",
         "guzzlehttp/guzzle": "^7.4"
 
     },

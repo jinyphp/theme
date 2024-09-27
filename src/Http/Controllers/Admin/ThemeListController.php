@@ -1,31 +1,36 @@
 <?php
-
 namespace Jiny\Theme\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
-
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 
-use Jiny\Admin\Http\Controllers\AdminController;
-class ThemeListController extends AdminController
+/**
+ * 설치된 테마 관리
+ */
+use Jiny\WireTable\Http\Controllers\WireDashController;
+class ThemeListController extends WireDashController
 {
     public function __construct()
     {
         parent::__construct();
         $this->setVisit($this);
 
-        ##
-        $this->actions['table'] = "site_theme"; // 테이블 정보
-        $this->actions['paging'] = 10; // 페이지 기본값
+        $this->setLayout("jinytheme::admin.list.layout");
 
-        $this->actions['view']['main'] = "jinytheme::admin.list.main";
-        $this->actions['view']['list'] = "jinytheme::admin.list.list";
-        $this->actions['view']['form'] = "jinytheme::admin.list.form";
+        $this->actions['title'] = "Theme 설치관리";
+        $this->actions['subtitle'] = "테마를 설치 및 삭제를 관리합니다.";
+
+        // ##
+        // $this->actions['table'] = "site_theme"; // 테이블 정보
+        // $this->actions['paging'] = 10; // 페이지 기본값
+
+        // $this->actions['view']['main'] = "jinytheme::admin.list.main";
+        // $this->actions['view']['list'] = "jinytheme::admin.list.list";
+        // $this->actions['view']['form'] = "jinytheme::admin.list.form";
 
         // https://github.com/jinyphp/theme_docs_bootstrap/archive/refs/heads/master.zip
         // https://github.com/jinyphp/theme_admin_sidebar/archive/refs/heads/master.zip

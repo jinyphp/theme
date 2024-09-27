@@ -15,6 +15,13 @@ class Theme
 
             //설정파일 로드
             self::$Instance->setting = config("jiny.theme.setting");
+
+            $path = base_path('theme');
+            $filename = $path.DIRECTORY_SEPARATOR."theme.json";
+            if(file_exists($filename)) {
+                self::$Instance->list = json_file_decode($filename);
+            }
+
         }
 
         return self::$Instance;
@@ -22,27 +29,65 @@ class Theme
 
     // 테마명
     const THEME = "theme"; //리소스 폴더명
+    public $name;
     public $theme;
+    public $_theme;
     public $setting;
-    //public $vendor, $name;
+    public $list = []; // 설치된 테마 목록
 
     public function setTheme($theme)
     {
         $this->theme = str_replace('/','.',$theme);
+        $this->name = str_replace('/','.',$theme);
+
+        // 세션에 적용 테마 설정
+        //session(['theme1' => $this->name]);
+        // dump("set theme");
+        // dd($this->name);
 
         $path = base_path('theme');
-        file_put_contents($path.DIRECTORY_SEPARATOR."default.txt",$theme);
+        $filename = $path.DIRECTORY_SEPARATOR."user.json";
+
+        if(file_exists($filename)) {
+            $data = json_file_decode($filename);
+        } else {
+            $data = [];
+        }
+
+        $data['default'] = $this->theme;
+        json_file_encode($filename, $data);
 
         return $this;
     }
 
     public function getTheme()
     {
-        $path = base_path('theme');
-        $filename = $path.DIRECTORY_SEPARATOR."default.txt";
-        if(file_exists($filename)) {
-            $theme = file_get_contents($filename);
-            return $theme;
+        // if (session()->has('theme')) {
+
+        // } else {
+        //     $theme = null;
+        // }
+        // dd($this->name);
+        // $theme = session('theme1', 'default');
+        // dump("get theme");
+        // dd($theme);
+
+
+        $action_theme = Action()->get('theme');
+        if($action_theme) {
+            // 엑션에서 설정한 테마를 우선 적용
+            return $action_theme;
+        }
+        // 기본 설정값
+        else {
+            $path = base_path('theme');
+            $filename = $path.DIRECTORY_SEPARATOR."user.json";
+            if(file_exists($filename)) {
+                $theme = json_file_decode($filename);
+                if(isset($theme['default'])) {
+                    return $theme['default'];
+                }
+            }
         }
 
         return false;
@@ -50,15 +95,17 @@ class Theme
 
     public function getName()
     {
-        $path = base_path('theme');
-        $filename = $path.DIRECTORY_SEPARATOR."default.txt";
-        if(file_exists($filename)) {
-            $theme = file_get_contents($path.DIRECTORY_SEPARATOR."default.txt");
-            return $theme;
-        }
+        return $this->getTheme();
 
-        return false;
-        //return $this->theme;
+        // $path = base_path('theme');
+        // $filename = $path.DIRECTORY_SEPARATOR."default.txt";
+        // if(file_exists($filename)) {
+        //     $theme = file_get_contents($path.DIRECTORY_SEPARATOR."default.txt");
+        //     return $theme;
+        // }
+
+        // return false;
+        // //return $this->theme;
     }
 
     public function isTheme()
@@ -122,15 +169,29 @@ class Theme
         return view("theme.".$name.".".$resource, $data);
     }
 
-    public function getThemeList()
-    {
-        $path = resource_path("views/".self::THEME);
-        $filename = $path.DIRECTORY_SEPARATOR."theme.json";
-        if(file_exists($filename)) {
-            $text = file_get_contents($filename);
-            return json_decode($text,true);
-        }
+    // public function list()
+    // {
+    //     $path = base_path('theme');
+    //     $filename = $path.DIRECTORY_SEPARATOR."theme.json";
+    //     dd($filename);
+    //     if(file_exists($filename)) {
+    //         $this->themes = json_file_decode($filename);
+    //     }
 
-        return [];
-    }
+    //     return $this->themes;
+    // }
+
+    // public function getThemeList()
+    // {
+    //     $path = resource_path("views/".self::THEME);
+    //     $filename = $path.DIRECTORY_SEPARATOR."theme.json";
+    //     if(file_exists($filename)) {
+    //         $text = file_get_contents($filename);
+    //         return json_decode($text,true);
+    //     }
+
+    //     return [];
+    // }
+
+
 }

@@ -20,16 +20,24 @@ class CreateSiteThemeStoreTable extends Migration
             $table->string('enable')->default(1);
 
             // 테마정보
-            $table->string('title');
-            $table->string('subtitle')->nullable();
-            $table->string('author')->nullable();
-            $table->string('email')->nullable();
-
             $table->string('code');
             $table->string('vendor')->nullable();
-            $table->string('name')->nullable();
-            $table->string('url')->nullable();
+            $table->string('title');
+            $table->string('subtitle')->nullable();
             $table->string('image')->nullable();
+            $table->text('content')->nullable();
+
+            $table->string('url')->nullable();
+            $table->string('description')->nullable();
+
+
+
+
+            $table->string('author')->nullable();
+            $table->string('email')->nullable();
+            $table->string('name')->nullable();
+
+
             $table->string('version')->nullable();
             $table->string('css')->nullable();
 
@@ -38,12 +46,12 @@ class CreateSiteThemeStoreTable extends Migration
             // prices : standard, multisite, extended
             $table->string('vote')->nullable();
 
-            $table->text('content')->nullable();
+
 
             $table->unsignedBigInteger('reviews')->default(0);
             $table->unsignedBigInteger('cnt')->default(0);  // 다운로드 횟수
 
-            $table->string('description')->nullable();
+
             // 작업자ID
             $table->unsignedBigInteger('user_id')->default(0);
         });

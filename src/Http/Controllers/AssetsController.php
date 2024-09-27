@@ -17,6 +17,7 @@ class AssetsController extends Controller
     {
         $uri = request()->path();
 
+        //dd("assets");
         // 우선순위1
         if($res = $this->getResponseWWW($uri)) {
             return $res;
@@ -28,9 +29,9 @@ class AssetsController extends Controller
         }
 
         // 우선순위3
-        if($res = $this->getResponseThemeByName($uri)) {
-            return $res;
-        }
+        // if($res = $this->getResponseThemeByName($uri)) {
+        //     return $res;
+        // }
 
         // 파일이 없습니다.
     }
@@ -48,6 +49,7 @@ class AssetsController extends Controller
             // 우선순위 1-2
             // 슬롯이 적용되어 있는 경우
             $slot = www_slot();
+            //dd($path.DIRECTORY_SEPARATOR.$slot.DIRECTORY_SEPARATOR.$uri);
             if($slot) {
                 $file = $path.DIRECTORY_SEPARATOR.$slot.DIRECTORY_SEPARATOR.$uri;
                 if (file_exists($file)) {
@@ -62,11 +64,29 @@ class AssetsController extends Controller
         // 리소스에 테마 경로까지 모두 지정한 경우
         // theme 폴더에서 검색
         $path = base_path('theme');
-        $arr = explode('/',ltrim($uri, '/assets'));
-        $themePath = implode('/',array_slice($arr, 0, 2))."/assets".'/'.implode('/',array_slice($arr, 2));
-        $file = $path.DIRECTORY_SEPARATOR.$themePath;
-        if (file_exists($file)) {
-            return $this->response($file);
+
+        $theme = theme()->getName();
+        $theme = str_replace(".",DIRECTORY_SEPARATOR,$theme);
+        //dump($theme);
+
+        $filename = $path.DIRECTORY_SEPARATOR.$theme;
+        $filename .= DIRECTORY_SEPARATOR.str_replace("/", DIRECTORY_SEPARATOR, $uri);
+
+        // if (session()->has('theme')) {
+        //     $theme = session('theme');
+        // } else {
+        //     $theme = "---";
+        // }
+        // dump($theme);
+        // dd($filename);
+
+        // $arr = explode('/',ltrim($uri, '/assets'));
+        // $themePath = implode('/',
+        // array_slice($arr, 0, 2))."/assets".'/'.implode('/',array_slice($arr, 2));
+        // $file = $path.DIRECTORY_SEPARATOR.$themePath;
+        // dd($file);
+        if (file_exists($filename)) {
+            return $this->response($filename);
         }
     }
 
@@ -74,19 +94,19 @@ class AssetsController extends Controller
     {
         // 테마가 선택되어 있는 상태에서
         // assets 이 지정되는 경우, 테마를 지정하여 theme 폴더에서
-        $path = base_path('theme');
-        $theme = file_get_contents($path.DIRECTORY_SEPARATOR."default.txt");
+        // $path = base_path('theme');
+        // $theme = file_get_contents($path.DIRECTORY_SEPARATOR."default.txt");
 
-        if($theme) {
-            // 디렉터리 기호 변경
-            $theme = str_replace(".", DIRECTORY_SEPARATOR, $theme);
+        // if($theme) {
+        //     // 디렉터리 기호 변경
+        //     $theme = str_replace(".", DIRECTORY_SEPARATOR, $theme);
 
-            $themePath = $theme.DIRECTORY_SEPARATOR.request()->path();
-            $file = $path.DIRECTORY_SEPARATOR.$themePath;
-            if (file_exists($file)) {
-                return $this->response($file);
-            }
-        }
+        //     $themePath = $theme.DIRECTORY_SEPARATOR.request()->path();
+        //     $file = $path.DIRECTORY_SEPARATOR.$themePath;
+        //     if (file_exists($file)) {
+        //         return $this->response($file);
+        //     }
+        // }
     }
 
     private function getTheme($uri)

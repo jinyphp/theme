@@ -1,4 +1,43 @@
 <?php
+
+/**
+ * 테마 관리를 위한 싱글턴 객체 반환
+ */
+if(!function_exists("theme")) {
+    function theme($name=null) {
+        $obj = \Jiny\Theme\Theme::instance();
+        if($name) {
+            $obj->setTheme($name);
+        }
+
+        return $obj;
+    }
+}
+
+function _setThemeName($name) {
+    session(['theme1' => $name]);
+}
+
+function _getThemeName()
+{
+    return session('theme1');
+}
+
+/**
+ * Theme _partials 안에서 리소스를 검출할 수 있도록
+ * prefix 코드를 붙여 줍니다.
+ */
+function inThemePartial($viewFile, $theme = null)
+{
+    $prefix = "theme";
+
+    if(!$theme) {
+        $theme = xTheme()->getName();
+    }
+
+    return $prefix."::".$theme."."."_partials.".$viewFile;
+}
+
 // 테마 객체를 생성합니다.
 /*
 if (!function_exists('theme')) {

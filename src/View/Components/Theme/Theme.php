@@ -9,5 +9,8 @@ use Illuminate\Support\Facades\View;
  */
 class Theme extends App
 {
-
+    public function __construct($name=null)
+    {
+        parent::__construct($name);
+    }
 }

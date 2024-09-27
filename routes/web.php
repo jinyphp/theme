@@ -1,11 +1,26 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
-
 use Jiny\Theme\Http\Controllers\AdminTheme;
 use Jiny\Theme\Http\Controllers\AdminThemeCopy;
 
+/**
+ * 프론트 영역
+ */
+Route::middleware(['web'])
+->name('admin.')
+->prefix("/themes")->group(function () {
+
+    Route::get('/{any?}', [
+        \Jiny\Theme\Http\Controllers\Site\ThemeStoreController::class,
+        "index"]);
+
+});
+
+
+/**
+ * backend 영역
+ */
 // 지니어드민 패키지가 설치가 되어 있는 경우에만 실행
 if(function_exists("isAdminPackage")) {
 
@@ -19,12 +34,18 @@ if(function_exists("isAdminPackage")) {
     Route::middleware(['web', 'auth'])
     ->name('admin.')
     ->prefix($prefix."/theme")->group(function () {
+
         Route::get('setting', [\Jiny\Theme\Http\Controllers\SettingController::class,"index"]);
 
         Route::resource('/store', \Jiny\Theme\Http\Controllers\Admin\ThemeStoreController::class);
         Route::resource('/copy', AdminThemeCopy::class);
 
         Route::resource('/list', \Jiny\Theme\Http\Controllers\Admin\ThemeListController::class);
+
+
+        Route::get('/market/{any?}', [
+            \Jiny\Theme\Http\Controllers\Admin\AdminThemeMarket::class,
+            "index"]);
 
         // 사이트 데쉬보드
         Route::get('/', [
