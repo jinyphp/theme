@@ -15,9 +15,10 @@
     "minimum-stability": "dev",
     "require": {
         "php": "^8.2",
-        "jiny/ui": "^0.5",
-        "guzzlehttp/guzzle": "^7.4"
+        "guzzlehttp/guzzle": "^7.4",
+        "jiny/icons": "^0.3.1",
 
+        "jiny/ui": "^0.6"
     },
     "autoload": {
         "psr-4": {
