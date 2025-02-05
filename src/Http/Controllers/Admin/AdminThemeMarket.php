@@ -19,7 +19,7 @@ class AdminThemeMarket extends WireDashController
         parent::__construct();
         $this->setVisit($this);
 
-        $this->actions['table'] = "site_theme_store"; // 테이블 정보
+        $this->actions['table']['name'] = "site_theme_store"; // 테이블 정보
         $this->actions['paging'] = 10; // 페이지 기본값
 
         $this->setLayout("jinytheme::admin.market.layout");

@@ -25,7 +25,7 @@ class ThemeListController extends WireDashController
         $this->actions['subtitle'] = "테마를 설치 및 삭제를 관리합니다.";
 
         // ##
-        // $this->actions['table'] = "site_theme"; // 테이블 정보
+        // $this->actions['table']['name'] = "site_theme"; // 테이블 정보
         // $this->actions['paging'] = 10; // 페이지 기본값
 
         // $this->actions['view']['main'] = "jinytheme::admin.list.main";
@@ -78,7 +78,7 @@ class ThemeListController extends WireDashController
     {
         $path = resource_path('views/theme').DIRECTORY_SEPARATOR;
 
-        $rows = DB::table($this->actions['table'])->whereIn('id',$selected)->get();
+        $rows = DB::table($this->actions['table']['name'])->whereIn('id',$selected)->get();
         foreach($rows as $row) {
             $filename = $path.$row->code;
             if(file_exists($filename) && is_dir($filename)) {
